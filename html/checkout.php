@@ -51,8 +51,33 @@ if (isset($_GET['id'])) {
             margin-bottom: 2%;
             width: 40%;
         }
-        .detail-div-top{
-            
+        .detail-top-div{
+            width: 94%;
+            height: auto;
+            margin-left: 3%;
+            background-color: white;
+            margin-top: 3%;
+        }
+        .detail-bottom-div{
+            width: 94%;
+            height: 15%;
+            margin-left: 3%;
+            background-color: white;
+            margin-top: 3%;
+        }
+        .top-detail-card{
+            margin-top: 20px;
+            background-color: green;
+            display: flex;
+        }
+        #top-detail-card-img{
+            height: 100%;
+            width: 25%;
+        }
+        .detail-top-card-details-div{
+            background-color: orange;
+            width: 75%;
+           
         }
     </style>
 </head>
@@ -75,6 +100,10 @@ if (isset($_GET['id'])) {
                                     <div class="form-group">
                                         <label for="email">Email</label>
                                         <input type="email" class="form-control" id="email" name="email" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="address">Phone</label>
+                                        <input type="number" class="form-control" id="phone" name="phone" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="address">Address</label>
@@ -102,8 +131,19 @@ if (isset($_GET['id'])) {
                 </div>
             </div></div>
         <div class="checkout-right-div">
-            <div class="detail-div-top"></div>
-            <div class="detail-div-bottom"></div>
+            <div class="detail-top-div">
+                <div class="top-detail-card">
+                    <img src="../images/104_download (9).jpg" id="top-detail-card-img" alt="">
+                    <div class="detail-top-card-details-div">
+                        <h1>Title</h1>
+                    </div>
+                </div>
+
+           
+            </div>
+            <div class="detail-bottom-div">
+
+            </div>
            
         </div>
     </div>
