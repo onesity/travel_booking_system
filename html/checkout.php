@@ -14,6 +14,7 @@ if (isset($_GET['id'])) {
         $price = $data['price'];
         $days = $data['days'];
         $category = $data['name'];
+        $gst_amount= ($price*18)/100;
     }
 }
 ?>
@@ -32,59 +33,83 @@ if (isset($_GET['id'])) {
             width: 98%;
             margin-left: 1%;
             height: auto;
-            
+
         }
-        
+
         .checkout-left-div {
             width: 55%;
             margin-left: 2%;
             margin-top: 2%;
             margin-bottom: 2%;
             background-color: lightblue;
-            height: 100%;
+            height: auto;
         }
-        
+
         .checkout-right-div {
             margin-left: 2%;
             background-color: lightblue;
             margin-top: 2%;
             margin-bottom: 2%;
             width: 40%;
+            height: 100%;
+
         }
-        .detail-top-div{
+
+        .detail-top-div {
             width: 94%;
-            height: auto;
+            height: 25%;
             margin-left: 3%;
-            background-color: white;
+            /* background-color: white; */
             margin-top: 3%;
         }
-        .detail-bottom-div{
+
+        .detail-bottom-div {
             width: 94%;
-            height: 15%;
+            height: 20%;
             margin-left: 3%;
-            background-color: white;
-            margin-top: 3%;
+            /* background-color: white; */
+            margin-top: 12%;
         }
-        .top-detail-card{
+
+        .top-detail-card {
             margin-top: 20px;
-            background-color: green;
+            background-color: white;
             display: flex;
         }
-        #top-detail-card-img{
+
+        #top-detail-card-img {
             height: 100%;
             width: 25%;
+            margin-top: 7%;
         }
-        .detail-top-card-details-div{
-            background-color: orange;
-            width: 75%;
-           
+
+        .detail-top-card-details-div {
+            /* background-color: white; */
+            width: 73%;
+            margin-left: 2%;
+
+        }
+
+        #price-tag {
+            margin-top: 50px;
+            margin-left: 65%;
+        }
+
+        #title-tag {
+            margin-top: 10%;
+
+        }
+
+        #card-desc {
+            margin-top: 20px;
         }
     </style>
 </head>
 
 <body>
     <div class="main-div">
-        <div class="checkout-left-div"> <div class="container">
+        <div class="checkout-left-div">
+            <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-md-12">
                         <div class="card mt-3 mb-3">
@@ -121,7 +146,7 @@ if (isset($_GET['id'])) {
                                         <label for="zip">Zip Code</label>
                                         <input type="text" class="form-control" id="zip" name="zip" required>
                                     </div>
-                                
+
                                     <button id="payButton" class="btn btn-primary btn-block">Pay Now</button>
                                     <input type="hidden" id="razorpay_payment_id" name="razorpay_payment_id">
                                 </form>
@@ -129,22 +154,32 @@ if (isset($_GET['id'])) {
                         </div>
                     </div>
                 </div>
-            </div></div>
+            </div>
+        </div>
         <div class="checkout-right-div">
             <div class="detail-top-div">
                 <div class="top-detail-card">
+                
                     <img src="../images/104_download (9).jpg" id="top-detail-card-img" alt="">
                     <div class="detail-top-card-details-div">
-                        <h1>Title</h1>
+                        <h2 id="title-tag"><?php  echo $title; ?></h2>
+                        <p id="card-desc"><?php  echo $description; ?></p>
+                        <h5 id="price-tag">Price: <?php  echo $price; ?></h5>
                     </div>
                 </div>
-
-           
             </div>
             <div class="detail-bottom-div">
-
+                <h4 id="total-ammount">Price: <?php  echo $price; ?></h4>
+                <h4 id="total-ammount">Seats: 1</h4>
+                <h4 id="total-ammount">Days: <?php  echo $days; ?></h4>
+                <h4 id="total-ammount">Subtotal: <?php  echo $price*1; ?></h4>
+                <h4 id="total-ammount">GST: 18% </h4>
+                <h4 id="total-ammount">GST amount: <?php  echo $gst_amount ; ?> </h4>
+                <hr style="width: 90%; height: 2px; background-color: black;">
+                <h4 id="total-ammount">Grand Total:<?php  echo $price+$gst_amount; ?> </h4>
+                <hr style="width: 90%; height: 2px; background-color: black;">
             </div>
-           
+
         </div>
     </div>
 

@@ -16,119 +16,119 @@ if (isset($_GET['id'])) {
         $category = $data['name'];
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+        <!DOCTYPE html>
+        <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trip Details</title>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Trip Details</title>
 
-    <!-- <link rel="stylesheet" href="page_style.css"> -->
+            <!-- <link rel="stylesheet" href="page_style.css"> -->
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    background-color: #f4f4f4;
+                }
 
-        .container,
-        #container {
-            width: 100%;
-            margin: 20px auto;
-            background: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+                .container,
+                #container {
+                    width: 100%;
+                    margin: 20px auto;
+                    background: #fff;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                }
 
-        .page_heading {
-            background: url("../<?php echo $image; ?>") no-repeat center center/cover;
-            height: 400px;
-            position: relative;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-size:100% 100%;
-            background-position: abstract;
-        }
+                .page_heading {
+                    background: url("../<?php echo $image; ?>") no-repeat center center/cover;
+                    height: 400px;
+                    position: relative;
+                    color: white;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background-size: 100% 100%;
+                    background-position: abstract;
+                }
 
-        .page_heading h1 {
-            margin: 0;
-            font-size: 3em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
+                .page_heading h1 {
+                    margin: 0;
+                    font-size: 3em;
+                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+                }
 
-        .content {
-            padding: 20px;
-        }
+                .content {
+                    padding: 20px;
+                }
 
-        .content h2 {
-            margin-top: 0;
-        }
+                .content h2 {
+                    margin-top: 0;
+                }
 
-        .details,
-        .itinerary {
-            margin-bottom: 20px;
-        }
+                .details,
+                .itinerary {
+                    margin-bottom: 20px;
+                }
 
-        .details ul {
-            list-style-type: none;
-            padding: 0;
-        }
+                .details ul {
+                    list-style-type: none;
+                    padding: 0;
+                }
 
-        .details ul li {
-            background: #eee;
-            margin: 5px 0;
-            padding: 10px;
-            border-radius: 5px;
-        }
+                .details ul li {
+                    background: #eee;
+                    margin: 5px 0;
+                    padding: 10px;
+                    border-radius: 5px;
+                }
 
-        .itinerary ul {
-            list-style-type: decimal;
-            padding-left: 20px;
-        }
+                .itinerary ul {
+                    list-style-type: decimal;
+                    padding-left: 20px;
+                }
 
-        .booking {
-            text-align: center;
-            margin: 20px 0;
-        }
+                .booking {
+                    text-align: center;
+                    margin: 20px 0;
+                }
 
-        .booking button {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background 0.3s ease;
-        }
+                .booking button {
+                    background: #007bff;
+                    color: white;
+                    border: none;
+                    padding: 15px 30px;
+                    font-size: 1.2em;
+                    cursor: pointer;
+                    border-radius: 5px;
+                    transition: background 0.3s ease;
+                }
 
-        .booking button:hover {
-            background: #0056b3;
-        }
+                .booking button:hover {
+                    background: #0056b3;
+                }
 
-        @media (min-width: 992px) {
+                @media (min-width: 992px) {
 
-            .container,
-            .container-lg,
-            .container-md,
-            .container-sm {
-                max-width: 100%;
-            }
+                    .container,
+                    .container-lg,
+                    .container-md,
+                    .container-sm {
+                        max-width: 100%;
+                    }
 
-            #booking_btn {
-                margin-left: 85%;
-                padding: 6px 17px;
-            }
-        }
-    </style>
-</head>
+                    #booking_btn {
+                        margin-left: 85%;
+                        padding: 6px 17px;
+                    }
+                }
+            </style>
+        </head>
 
-<body>
- 
+        <body>
+
             <div class="container" id="container">
                 <div class="page_heading">
                     <h1> Discover <?php echo $title; ?> </h1>
@@ -159,29 +159,29 @@ if (isset($_GET['id'])) {
                     </div>
                     <div class="booking">
                         <?php
-                        if(is_login()){
-                            ?>
-                            <button onclick="location.href='checkout.php'" id="booking_btn">Book Now</button>
-                            <?php
-                        }else{
-                            ?>
+                        if (is_login()) {
+                        ?>
+                            <button onclick="location.href='checkout.php?id=<?php echo $id; ?>'" id="booking_btn">Book Now</button>
+                        <?php
+                        } else {
+                        ?>
                             <button onclick="location.href='signup.php'" id="booking_btn">Book Now</button>
-                            <?php
+                        <?php
 
                         }
                         ?>
-                        
+
                     </div>
                 </div>
         <?php
-        }
     }
+}
         ?>
             </div>
-</body>
+        </body>
 
-</html>
+        </html>
 
-<?php
-include('footer.php');
-?>
+        <?php
+        include('footer.php');
+        ?>
