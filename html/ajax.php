@@ -264,3 +264,10 @@ if ($action = 'get_all_travel_records') {
     echo json_encode($response);
     exit;
 }
+
+if($action=='create_booking'){
+    $userid=$data['userid'];
+    echo json_encode($userid);
+    exit;
+    
+}

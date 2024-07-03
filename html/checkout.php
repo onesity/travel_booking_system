@@ -1,5 +1,7 @@
 <?php
 include('header.php');
+$login_user = is_login()->data;
+// var_dump($login_user->userid);
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
@@ -14,7 +16,7 @@ if (isset($_GET['id'])) {
         $price = $data['price'];
         $days = $data['days'];
         $category = $data['name'];
-        $gst_amount= ($price*18)/100;
+        $gst_amount = ($price * 18) / 100;
     }
 }
 ?>
@@ -146,9 +148,11 @@ if (isset($_GET['id'])) {
                                         <label for="zip">Zip Code</label>
                                         <input type="text" class="form-control" id="zip" name="zip" required>
                                     </div>
-
                                     <button id="payButton" class="btn btn-primary btn-block">Pay Now</button>
                                     <input type="hidden" id="razorpay_payment_id" name="razorpay_payment_id">
+                                    <input type="hidden" id="userid" name="userid" value="<?php echo $login_user->userid; ?>">
+                                    <input type="hidden" id="travelid" name="travelid" value="<?php echo $id; ?>">
+                                    <input type="hidden" id="amount" name="amount" value="<?php echo $price + $gst_amount; ?>">
                                 </form>
                             </div>
                         </div>
@@ -159,24 +163,24 @@ if (isset($_GET['id'])) {
         <div class="checkout-right-div">
             <div class="detail-top-div">
                 <div class="top-detail-card">
-                
+
                     <img src="../images/104_download (9).jpg" id="top-detail-card-img" alt="">
                     <div class="detail-top-card-details-div">
-                        <h2 id="title-tag"><?php  echo $title; ?></h2>
-                        <p id="card-desc"><?php  echo $description; ?></p>
-                        <h5 id="price-tag">Price: <?php  echo $price; ?></h5>
+                        <h2 id="title-tag"><?php echo $title; ?></h2>
+                        <p id="card-desc"><?php echo $description; ?></p>
+                        <h5 id="price-tag">Price: <?php echo $price; ?></h5>
                     </div>
                 </div>
             </div>
             <div class="detail-bottom-div">
-                <h4 id="total-ammount">Price: <?php  echo $price; ?></h4>
+                <h4 id="total-ammount">Price: <?php echo $price; ?></h4>
                 <h4 id="total-ammount">Seats: 1</h4>
-                <h4 id="total-ammount">Days: <?php  echo $days; ?></h4>
-                <h4 id="total-ammount">Subtotal: <?php  echo $price*1; ?></h4>
+                <h4 id="total-ammount">Days: <?php echo $days; ?></h4>
+                <h4 id="total-ammount">Subtotal: <?php echo $price * 1; ?></h4>
                 <h4 id="total-ammount">GST: 18% </h4>
-                <h4 id="total-ammount">GST amount: <?php  echo $gst_amount ; ?> </h4>
+                <h4 id="total-ammount">GST amount: <?php echo $gst_amount; ?> </h4>
                 <hr style="width: 90%; height: 2px; background-color: black;">
-                <h4 id="total-ammount">Grand Total:<?php  echo $price+$gst_amount; ?> </h4>
+                <h4 id="total-ammount">Grand Total:<?php echo $price + $gst_amount; ?> </h4>
                 <hr style="width: 90%; height: 2px; background-color: black;">
             </div>
 
@@ -190,33 +194,66 @@ if (isset($_GET['id'])) {
     <script>
         document.getElementById('payButton').onclick = function(e) {
             e.preventDefault();
+            const name = document.getElementById('name');
+            const email = document.getElementById('email');
+            const phone = document.getElementById('phone');
+            const address = document.getElementById('address');
+            const city = document.getElementById('city');
+            const state = document.getElementById('state');
+            const zip = document.getElementById('zip');
+            const userid = document.getElementById('userid');
+            const travelid = document.getElementById('travelid');
+            const amount = document.getElementById('amount');
 
-            var options = {
-                "key": "YOUR_RAZORPAY_KEY_ID", // Enter the Key ID generated from the Razorpay Dashboard
-                "amount": "50000", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise or ₹500.
-                "currency": "INR",
-                "name": "Acme Corp",
-                "description": "Test Transaction",
-                "image": "https://example.com/your_logo",
-                "handler": function(response) {
-                    document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
-                    document.getElementById('checkoutForm').submit();
+            let booking_data = {
+                action:'create_booking',
+                userid: userid.value,
+                name: name.value,
+                phone: phone.value,
+                address: address.value,
+                city: city.value,
+                state: state.value,
+                zip: zip.value,
+                travelid: travelid.value,
+                amount: amount.value
+            }
+            fetch('http://localhost/travel_booking_system/travel_booking_system/html/ajax.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-                "prefill": {
-                    "name": "John Doe",
-                    "email": "john.doe@example.com",
-                    "contact": "9999999999"
-                },
-                "notes": {
-                    "address": "Razorpay Corporate Office"
-                },
-                "theme": {
-                    "color": "#F37254"
-                }
-            };
+                body: JSON.stringify(booking_data)
+            }).then((res) => {
+                return res.json();
+            }).then((res) => {
+                console.log(res);
+            })
+            // var options = {
+            //     "key": "YOUR_RAZORPAY_KEY_ID", // Enter the Key ID generated from the Razorpay Dashboard
+            //     "amount": "50000", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise or ₹500.
+            //     "currency": "INR",
+            //     "name": "Acme Corp",
+            //     "description": "Test Transaction",
+            //     "image": "https://example.com/your_logo",
+            //     "handler": function(response) {
+            //         document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+            //         document.getElementById('checkoutForm').submit();
+            //     },
+            //     "prefill": {
+            //         "name": "John Doe",
+            //         "email": "john.doe@example.com",
+            //         "contact": "9999999999"
+            //     },
+            //     "notes": {
+            //         "address": "Razorpay Corporate Office"
+            //     },
+            //     "theme": {
+            //         "color": "#F37254"
+            //     }
+            // };
 
-            var rzp1 = new Razorpay(options);
-            rzp1.open();
+            // var rzp1 = new Razorpay(options);
+            // rzp1.open();
         }
     </script>
 </body>
