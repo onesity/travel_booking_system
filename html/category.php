@@ -212,9 +212,15 @@ include('header.php');
                 })
             }
         });
-
-
+        
     </script>
+    <script>
+     $(document).ready(function() {
+            $('#example').DataTable({
+                responsive: true
+            });
+        });
+</script>
 </body>
 <?php
 include('footer.php');

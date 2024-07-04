@@ -1,4 +1,4 @@
-import { success_modal, validateUsername, validateEmail, validatePassword } from './functions.js';
+import { success_modal, validateEmail, validatePassword, validateUsername } from './functions.js';
 window.addEventListener('load', () => {
 
     const form_div = document.querySelector('.form-div');
@@ -52,7 +52,7 @@ window.addEventListener('load', () => {
         var data = { username: username.value, email: email.value, password: password.value, action: 'signup' };
         if (Object.keys(errors).length == 0) {
 
-            fetch('http://localhost/travel_booking_system/travel_booking_system/ajax.php', {
+            fetch('http://localhost/travel_booking_system/travel_booking_system/html/ajax.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ window.addEventListener('load', () => {
                         } else {
                             otp_error.style.display = "none";
                             var otp_data = { action: 'otp_verification', otp: otp_field.value }
-                            fetch('http://localhost/travel_booking_system/travel_booking_system/ajax.php', {
+                            fetch('http://localhost/travel_booking_system/travel_booking_system/html/ajax.php', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -123,7 +123,7 @@ window.addEventListener('load', () => {
                     })
                     resend_otp_btn.addEventListener('click', () => {
                         var resend_otp_data = { action: 'resend_otp' };
-                        fetch('http://localhost/travel_booking_system/travel_booking_system/ajax.php', {
+                        fetch('http://localhost/travel_booking_system/travel_booking_system/html/ajax.php', {
                             method: 'POST',
                             header: {
                                 'Content-Type': 'application/JSON'

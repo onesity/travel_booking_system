@@ -29,7 +29,7 @@ if (isset($_GET['id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout Page</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
     <style>
         .main-div {
             width: 98%;
@@ -105,6 +105,11 @@ if (isset($_GET['id'])) {
         #card-desc {
             margin-top: 20px;
         }
+
+        #count-seat {
+            width: 70px;
+            border: none;
+        }
     </style>
 </head>
 
@@ -174,13 +179,27 @@ if (isset($_GET['id'])) {
             </div>
             <div class="detail-bottom-div">
                 <h4 id="total-ammount">Price: <?php echo $price; ?></h4>
-                <h4 id="total-ammount">Seats: 1</h4>
+                <h4 id="total-ammount">Seats:
+                    <select name="" id="count-seat">
+                        <option value="1" >1</option>
+                        <option value="2" >2</option>
+                        <option value="3" >3</option>
+                        <option value="4" >4</option>
+                        <option value="5" >5</option>
+                        <option value="6" >6</option>
+                        <option value="7" >7</option>
+                        <option value="8" >8</option>
+                        <option value="9" >9</option>
+                        <option value="10">10</option>
+                    </select>
+                </h4>
+
                 <h4 id="total-ammount">Days: <?php echo $days; ?></h4>
-                <h4 id="total-ammount">Subtotal: <?php echo $price * 1; ?></h4>
+                <h4 id="sub-total">Subtotal: 1 x  <?php echo $price * 1; ?> = <?php echo $price * 1; ?></h4>
                 <h4 id="total-ammount">GST: 18% </h4>
-                <h4 id="total-ammount">GST amount: <?php echo $gst_amount; ?> </h4>
+                <h4 id="gst-ammount">GST amount: <?php echo $gst_amount; ?> </h4>
                 <hr style="width: 90%; height: 2px; background-color: black;">
-                <h4 id="total-ammount">Grand Total:<?php echo $price + $gst_amount; ?> </h4>
+                <h4 id="grand-total">Grand Total:<?php echo $price + $gst_amount; ?> </h4>
                 <hr style="width: 90%; height: 2px; background-color: black;">
             </div>
 
@@ -192,6 +211,15 @@ if (isset($_GET['id'])) {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
+        const count_seat=document.getElementById('count-seat');
+        const sub_total=document.getElementById('sub-total');
+        const gst_ammount=document.getElementById('gst-ammount');
+        const grand_total_amount=document.getElementById('grand-total');
+        const amount = document.getElementById('amount');
+        const price="<?php echo $price; ?>";
+        let total_ammount=((price*count_seat.value)+((price*count_seat.value)*18)/100);
+
+
         document.getElementById('payButton').onclick = function(e) {
             e.preventDefault();
             const name = document.getElementById('name');
@@ -203,19 +231,20 @@ if (isset($_GET['id'])) {
             const zip = document.getElementById('zip');
             const userid = document.getElementById('userid');
             const travelid = document.getElementById('travelid');
-            const amount = document.getElementById('amount');
 
             let booking_data = {
-                action:'create_booking',
+                action: 'create_booking',
                 userid: userid.value,
                 name: name.value,
+                email:email.value,
                 phone: phone.value,
                 address: address.value,
                 city: city.value,
                 state: state.value,
                 zip: zip.value,
                 travelid: travelid.value,
-                amount: amount.value
+                seats:count_seat.value,
+                amount:((price*count_seat.value)+((price*count_seat.value)*18)/100)
             }
             fetch('http://localhost/travel_booking_system/travel_booking_system/html/ajax.php', {
                 method: 'POST',
@@ -226,7 +255,9 @@ if (isset($_GET['id'])) {
             }).then((res) => {
                 return res.json();
             }).then((res) => {
-                console.log(res);
+                if(res.success==true){
+                    
+                }
             })
             // var options = {
             //     "key": "YOUR_RAZORPAY_KEY_ID", // Enter the Key ID generated from the Razorpay Dashboard
@@ -255,6 +286,14 @@ if (isset($_GET['id'])) {
             // var rzp1 = new Razorpay(options);
             // rzp1.open();
         }
+        count_seat.addEventListener('change',()=>{
+            
+            sub_total.innerText="Subtotal : "+count_seat.value+" x "+price+" = "+price*count_seat.value;
+            gst_ammount.innerHTML="GST amount : "+ ((price*count_seat.value)*18)/100;
+            grand_total_amount.innerHTML="Grand Total : "+((price*count_seat.value)+((price*count_seat.value)*18)/100);
+            amount.setAttribute('value',((price*count_seat.value)+((price*count_seat.value)*18)/100));
+
+        })
     </script>
 </body>
 

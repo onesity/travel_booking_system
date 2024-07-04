@@ -1,4 +1,6 @@
 <?php
+require('vendor/autoload.php'); // Make sure you have the Razorpay PHP SDK
+use Razorpay\Api\Api;
 
 require_once("lib.php");
 
@@ -10,7 +12,7 @@ session_start();
 
 $data = json_decode(file_get_contents('php://input'), true);
 $action = $data['action'];
-
+// var_dump($action);
 if ($action == 'signup' || $action == 'otp_verification') {
     global $otp;
     if ($action == 'signup') {
@@ -247,7 +249,8 @@ if ($action == 'suspend_travel') {
     exit;
 }
 
-if ($action = 'get_all_travel_records') {
+if ($action == 'get_all_travel_records') {
+
     $query = "SELECT * FROM travel WHERE status=1";
     $query_res = mysqli_query($conn, $query);
     if ($query_res) {
@@ -265,9 +268,48 @@ if ($action = 'get_all_travel_records') {
     exit;
 }
 
-if($action=='create_booking'){
-    $userid=$data['userid'];
-    echo json_encode($userid);
+if ($action == 'create_booking') {
+    $userid = $data['userid'];
+    $amount = $data['amount'];
+    $city = $data['city'];
+    $name = $data['name'];
+    $email = $data['email'];
+    $phone = $data['phone'];
+    $state = $data['state'];
+    $travelid = $data['travelid'];
+    $zipcode = $data['zip'];
+    $address = $data['address'];
+    $status = 1;
+    $seats = $data['seats'];
+    $timecreated = time();
+
+    $query = "insert into bookings(userid,travelid,name,phone,email,address,city,state,zipcode,seats,status,timecreated) values('$userid','$travelid','$name','$phone','$email','$address','$city','$state','$zipcode','$seats','$status','$timecreated')";
+
+    $query_res = mysqli_query($conn, $query);
+    if ($query_res) {
+        $response = ['success' => true, 'msg' => 'Order Created Successfully!'];
+    } else {
+        $response = ['success' => false, 'msg' => 'Something Went Wrong'];
+    }
+    echo json_encode($response);
     exit;
-    
+}
+
+if ($action == 'create_order') {
+
+
+$api_key = 'your_key_id'; // Replace with your Key ID
+$api_secret = 'your_key_secret'; // Replace with your Key Secret
+$api = new Api($api_key, $api_secret);
+
+$orderData = [
+    'receipt'         => 3456,
+    'amount'          => 1000, // Amount in paise (₹10.00)
+    'currency'        => 'INR',
+    'payment_capture' => 1 // Auto capture
+];
+
+$razorpayOrder = $api->order->create($orderData);
+
+$order_id = $razorpayOrder['id'];
 }
