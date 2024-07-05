@@ -1,5 +1,5 @@
 <?php
-require('vendor/autoload.php'); // Make sure you have the Razorpay PHP SDK
+require('../vendor/autoload.php'); // Make sure you have the Razorpay PHP SDK
 use Razorpay\Api\Api;
 
 require_once("lib.php");
@@ -296,20 +296,41 @@ if ($action == 'create_booking') {
 }
 
 if ($action == 'create_order') {
-
-
-$api_key = 'your_key_id'; // Replace with your Key ID
-$api_secret = 'your_key_secret'; // Replace with your Key Secret
-$api = new Api($api_key, $api_secret);
-
-$orderData = [
-    'receipt'         => 3456,
-    'amount'          => 1000, // Amount in paise (₹10.00)
-    'currency'        => 'INR',
-    'payment_capture' => 1 // Auto capture
-];
-
-$razorpayOrder = $api->order->create($orderData);
-
-$order_id = $razorpayOrder['id'];
+    $amount=$data['amount'];
+    
+    $api_key = API_KEY; // Replace with your Key ID
+    $api_secret = API_SECRET; // Replace with your Key Secret
+    $api = new Api($api_key, $api_secret);
+    
+    $orderData = [
+        'receipt'         => RECIEPT_ID,
+        'amount'          => $amount, // Amount in paise (₹10.00)
+        'currency'        => 'INR',
+        'payment_capture' => 1 // Auto capture
+    ];
+    
+    $razorpayOrder = $api->order->create($orderData);
+    $data=['order_id'=>$razorpayOrder['id'],'amount'=>$razorpayOrder['amount'],'api_key'=>API_KEY, 'currency'=>'INR','entity'=>$razorpayOrder['entity'],'created_at'=>$razorpayOrder['created_at']];
+    
+    $response = ['success' => true, 'msg' => 'Order Created Successfully!','data'=>$data];
+    echo json_encode($response);
+    exit;
 }
+
+// array (size=12)
+// 'amount' => int 1000
+// 'amount_due' => int 1000
+// 'amount_paid' => int 0
+// 'attempts' => int 0
+// 'created_at' => int 1720184581
+// 'currency' => string 'INR' (length=3)
+// 'entity' => string 'order' (length=5)
+// 'id' => string 'order_OUxbQuq2zEpXzG' (length=20)
+// 'notes' => 
+//   object(Razorpay\Api\Order)[10]
+//     protected 'attributes' => 
+//       array (size=0)
+//         ...
+// 'offer_id' => null
+// 'receipt' => string '3456' (length=4)
+// 'status' => string 'created' (length=

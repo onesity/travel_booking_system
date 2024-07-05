@@ -124,40 +124,42 @@ if (isset($_GET['id'])) {
                                 <h2>Checkout</h2>
                             </div>
                             <div class="card-body">
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="address">Phone</label>
+                                    <input type="number" class="form-control" id="phone" name="phone" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="address">Address</label>
+                                    <input type="text" class="form-control" id="address" name="address" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="city">City</label>
+                                    <input type="text" class="form-control" id="city" name="city" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="state">State</label>
+                                    <input type="text" class="form-control" id="state" name="state" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="zip">Zip Code</label>
+                                    <input type="text" class="form-control" id="zip" name="zip" required>
+                                </div>
+                                <button id="payButton" class="btn btn-primary btn-block">Pay Now</button>
                                 <form id="checkoutForm" method="POST" action="verify.php">
-                                    <div class="form-group">
-                                        <label for="name">Name</label>
-                                        <input type="text" class="form-control" id="name" name="name" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="email" class="form-control" id="email" name="email" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="address">Phone</label>
-                                        <input type="number" class="form-control" id="phone" name="phone" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="address">Address</label>
-                                        <input type="text" class="form-control" id="address" name="address" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="city">City</label>
-                                        <input type="text" class="form-control" id="city" name="city" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="state">State</label>
-                                        <input type="text" class="form-control" id="state" name="state" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="zip">Zip Code</label>
-                                        <input type="text" class="form-control" id="zip" name="zip" required>
-                                    </div>
-                                    <button id="payButton" class="btn btn-primary btn-block">Pay Now</button>
-                                    <input type="hidden" id="razorpay_payment_id" name="razorpay_payment_id">
                                     <input type="hidden" id="userid" name="userid" value="<?php echo $login_user->userid; ?>">
                                     <input type="hidden" id="travelid" name="travelid" value="<?php echo $id; ?>">
                                     <input type="hidden" id="amount" name="amount" value="<?php echo $price + $gst_amount; ?>">
+                                    <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+                                    <input type="hidden" id="razorpay_payment_id" name="razorpay_payment_id">
+                                    <input type="hidden" name="razorpay_signature" id="razorpay_signature">
                                 </form>
                             </div>
                         </div>
@@ -181,21 +183,21 @@ if (isset($_GET['id'])) {
                 <h4 id="total-ammount">Price: <?php echo $price; ?></h4>
                 <h4 id="total-ammount">Seats:
                     <select name="" id="count-seat">
-                        <option value="1" >1</option>
-                        <option value="2" >2</option>
-                        <option value="3" >3</option>
-                        <option value="4" >4</option>
-                        <option value="5" >5</option>
-                        <option value="6" >6</option>
-                        <option value="7" >7</option>
-                        <option value="8" >8</option>
-                        <option value="9" >9</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
                         <option value="10">10</option>
                     </select>
                 </h4>
 
                 <h4 id="total-ammount">Days: <?php echo $days; ?></h4>
-                <h4 id="sub-total">Subtotal: 1 x  <?php echo $price * 1; ?> = <?php echo $price * 1; ?></h4>
+                <h4 id="sub-total">Subtotal: 1 x <?php echo $price * 1; ?> = <?php echo $price * 1; ?></h4>
                 <h4 id="total-ammount">GST: 18% </h4>
                 <h4 id="gst-ammount">GST amount: <?php echo $gst_amount; ?> </h4>
                 <hr style="width: 90%; height: 2px; background-color: black;">
@@ -211,40 +213,40 @@ if (isset($_GET['id'])) {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
-        const count_seat=document.getElementById('count-seat');
-        const sub_total=document.getElementById('sub-total');
-        const gst_ammount=document.getElementById('gst-ammount');
-        const grand_total_amount=document.getElementById('grand-total');
+        const count_seat = document.getElementById('count-seat');
+        const sub_total = document.getElementById('sub-total');
+        const gst_ammount = document.getElementById('gst-ammount');
+        const grand_total_amount = document.getElementById('grand-total');
         const amount = document.getElementById('amount');
-        const price="<?php echo $price; ?>";
-        let total_ammount=((price*count_seat.value)+((price*count_seat.value)*18)/100);
+        const price = "<?php echo $price; ?>";
+        let total_ammount = ((price * count_seat.value) + ((price * count_seat.value) * 18) / 100);
 
+        const name = document.getElementById('name');
+        const email = document.getElementById('email');
+        const phone = document.getElementById('phone');
+        const address = document.getElementById('address');
+        const city = document.getElementById('city');
+        const state = document.getElementById('state');
+        const zip = document.getElementById('zip');
+        const userid = document.getElementById('userid');
+        const travelid = document.getElementById('travelid');
 
         document.getElementById('payButton').onclick = function(e) {
             e.preventDefault();
-            const name = document.getElementById('name');
-            const email = document.getElementById('email');
-            const phone = document.getElementById('phone');
-            const address = document.getElementById('address');
-            const city = document.getElementById('city');
-            const state = document.getElementById('state');
-            const zip = document.getElementById('zip');
-            const userid = document.getElementById('userid');
-            const travelid = document.getElementById('travelid');
 
             let booking_data = {
                 action: 'create_booking',
                 userid: userid.value,
                 name: name.value,
-                email:email.value,
+                email: email.value,
                 phone: phone.value,
                 address: address.value,
                 city: city.value,
                 state: state.value,
                 zip: zip.value,
                 travelid: travelid.value,
-                seats:count_seat.value,
-                amount:((price*count_seat.value)+((price*count_seat.value)*18)/100)
+                seats: count_seat.value,
+                amount: ((price * count_seat.value) + ((price * count_seat.value) * 18) / 100)
             }
             fetch('http://localhost/travel_booking_system/travel_booking_system/html/ajax.php', {
                 method: 'POST',
@@ -255,43 +257,66 @@ if (isset($_GET['id'])) {
             }).then((res) => {
                 return res.json();
             }).then((res) => {
-                if(res.success==true){
-                    
+                if (res.success == true) {
+                    const create_order_data = {
+                        action: 'create_order',
+                        amount: parseInt(((price * count_seat.value) + ((price * count_seat.value) * 18) / 100))
+                    }
+                    fetch('http://localhost/travel_booking_system/travel_booking_system/html/ajax.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(create_order_data)
+                    }).then((res) => {
+                        return res.json();
+                    }).then((res) => {
+
+                        if (res.success == true) {
+                            const data = res.data;
+                            var options = {
+                                "key": data['api_key'],
+                                "amount": data['amount'] * 100,
+                                "currency": "INR",
+                                "name": name,
+                                "description": "This is test payment description.",
+                                "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3420502Ztc7RjaetY17CYvJv3m21wM14scg&s",
+                                order_id: res.data['order_id'],
+                                "handler": function(response) {
+
+                                    document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+                                    document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+                                    document.getElementById('razorpay_signature').value = response.razorpay_signature;
+                                    document.getElementById('checkoutForm').submit();
+                                },
+                                "prefill": {
+                                    "name": name,
+                                    "email": email,
+                                    "contact": phone
+                                },
+                                "notes": {
+                                    "address": "Razorpay Corporate Office"
+                                },
+                                "theme": {
+                                    "color": "white"
+                                }
+                            };
+
+                            var rzp1 = new Razorpay(options);
+                            rzp1.open();
+                        }
+                    })
+
                 }
             })
-            // var options = {
-            //     "key": "YOUR_RAZORPAY_KEY_ID", // Enter the Key ID generated from the Razorpay Dashboard
-            //     "amount": "50000", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise or ₹500.
-            //     "currency": "INR",
-            //     "name": "Acme Corp",
-            //     "description": "Test Transaction",
-            //     "image": "https://example.com/your_logo",
-            //     "handler": function(response) {
-            //         document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
-            //         document.getElementById('checkoutForm').submit();
-            //     },
-            //     "prefill": {
-            //         "name": "John Doe",
-            //         "email": "john.doe@example.com",
-            //         "contact": "9999999999"
-            //     },
-            //     "notes": {
-            //         "address": "Razorpay Corporate Office"
-            //     },
-            //     "theme": {
-            //         "color": "#F37254"
-            //     }
-            // };
 
-            // var rzp1 = new Razorpay(options);
-            // rzp1.open();
         }
-        count_seat.addEventListener('change',()=>{
-            
-            sub_total.innerText="Subtotal : "+count_seat.value+" x "+price+" = "+price*count_seat.value;
-            gst_ammount.innerHTML="GST amount : "+ ((price*count_seat.value)*18)/100;
-            grand_total_amount.innerHTML="Grand Total : "+((price*count_seat.value)+((price*count_seat.value)*18)/100);
-            amount.setAttribute('value',((price*count_seat.value)+((price*count_seat.value)*18)/100));
+        count_seat.addEventListener('change', () => {
+
+            sub_total.innerText = "Subtotal : " + count_seat.value + " x " + price + " = " + price * count_seat.value;
+            gst_ammount.innerHTML = "GST amount : " + ((price * count_seat.value) * 18) / 100;
+            grand_total_amount.innerHTML = "Grand Total : " + ((price * count_seat.value) + ((price * count_seat.value) * 18) / 100);
+            amount.setAttribute('value', parseInt(((price * count_seat.value) + ((price * count_seat.value) * 18) / 100)));
 
         })
     </script>

@@ -113,3 +113,28 @@ document.getElementById('fileInput').addEventListener('change', function() {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+
+<?php
+
+require('../vendor/autoload.php'); // Make sure you have the Razorpay PHP SDK
+require_once('config.php'); // Make sure you have the Razorpay PHP SDK
+use Razorpay\Api\Api;
+
+
+$api_key = API_KEY; // Replace with your Key ID
+$api_secret = API_SECRET; // Replace with your Key Secret
+$api = new Api($api_key, $api_secret);
+
+$orderData = [
+    'receipt'         => '3456',
+    'amount'          => 1000, // Amount in paise (₹10.00)
+    'currency'        => 'INR',
+    'payment_capture' => 1 // Auto capture
+];
+
+$razorpayOrder = $api->order->create($orderData);
+
+$order_id = $razorpayOrder['id'];
+var_dump($razorpayOrder);
+
+?>
