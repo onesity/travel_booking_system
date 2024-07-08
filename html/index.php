@@ -48,7 +48,7 @@ include('header.php');
 
         }
 
-      
+
         #price-tag {
             margin-left: 20px;
             margin-right: 25%;
@@ -135,21 +135,23 @@ include('header.php');
     </div>
 
     <nav aria-label="...">
-        <ul class="pagination justify-content-end">
-            <li class="page-item disabled">
+        <ul class="pagination justify-content-end" id='pagination'>
+
+            <!-- <li class="page-item disabled">
                 <span class="page-link">Previous</span>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item active">
+            </li> -->
+
+            <!-- <li class="page-item active">
                 <span class="page-link">
-                    2
-                    <span class="sr-only">(current)</span>
+                    2 <span class="sr-only">(current)</span>
                 </span>
             </li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
             <li class="page-item">
+                <a class="page-link" href="#">3</a>
+            </li> -->
+            <!-- <li class="page-item">
                 <a class="page-link" href="#">Next</a>
-            </li>
+            </li> -->
         </ul>
     </nav>
 
@@ -174,16 +176,16 @@ include('header.php');
                 const card_deck = document.querySelector('.card-deck');
                 if (res.success == true) {
 
-
+                    console.log(res);
                     res.data.forEach((e) => {
-                        console.log(e);
+                        // console.log(e);
                         let id = e.id;
                         let title = e.title;
                         let description = e.description;
                         let image = e.image;
                         let days = e.days;
                         let price = e.price;
-                     
+
 
                         const card_body = `
                        <div class="main_card_body">
@@ -208,6 +210,21 @@ include('header.php');
                         card_deck.append(card);
 
                     })
+                    const paginatoin_ul = document.getElementById('pagination');
+                    let pagination_li='<li class="page-item disabled"><span class="page-link">Previous<span></li>';
+                    for (let i = 1; i <= res.pages; i++) {
+                        pagination_li+= '<li class="page-item " data-id="'+ i +'"><span class="page-link">' + i +'<span class="sr-only">(current)</span></span></li>';
+                    }
+                    pagination_li+=' <li class="page-item"><a class="page-link" href="#">Next</a></li>';
+                    paginatoin_ul.innerHTML=pagination_li;
+                    const paginations = document.querySelectorAll('pagination');
+                    
+                    // paginations.addEventListener('click',()=>{
+                        paginations.forEach((e)=>{
+                            console.log(e)
+                        })
+                        
+                    // })
 
                 }
             })

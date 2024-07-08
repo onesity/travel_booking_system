@@ -1,6 +1,10 @@
 <?php
+require_once('lib.php');
+if(is_siteadmin()==false){
+    header('Location:index.php');
+    exit;
+}
 include('header.php');
-// require_once('lib.php');
 
 ?>
 <!DOCTYPE html>

@@ -49,7 +49,7 @@ if ($status == true) {
 		$order = $api->order->fetch($order_id);
 
 		if ($order['amount'] == $order->amount && $order->amount == $order->amount_paid && $order->status == 'paid') {
-			$query = "update orders set status='$order->status',payment_id='$razorpay_payment_id' where id='$id' and userid='$userid' and order_id='$' and travelid='$travelid'";
+			$query = "update orders set status='$order->status',payment_id='$razorpay_payment_id' where id='$id' and userid='$userid' and order_id='$order_id' and travelid='$travelid'";
 			$res = mysqli_query($conn, $query);
 			$user_query = "select * from user where id='$userid'";
 			$user_query_exe = mysqli_query($conn, $user_query);

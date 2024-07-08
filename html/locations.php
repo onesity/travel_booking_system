@@ -1,4 +1,9 @@
 <?php
+require_once('lib.php');
+if(is_siteadmin()==false){
+    header('Location:index.php');
+    exit;
+}
 include('header.php');
 
 ?>
@@ -10,7 +15,7 @@ include('header.php');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trip Details Form</title>
 
-    <link rel="stylesheet" href="page_style.css">
+    <!-- <link rel="stylesheet" href="../css/page_style.css"> -->
     <style>
         .container {
             width: 100%;
@@ -98,7 +103,15 @@ include('header.php');
             margin-top: 22%;
         }
 
-    
+        td#description {
+            margin-bottom: 0;
+            text-align: left;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     </style>
 
 </head>
@@ -164,10 +177,10 @@ include('header.php');
 
                             echo "<tr>
                             <td>$sr</td>
-                            <td><img src='$image' id='travel_image'>  </td>
+                            <td><img src='../$image' id='travel_image'>  </td>
                             <td>$title</td>
                             <td>$category_name</td>
-                            <td id='description'>$description</td>
+                            <td >$description</td>
                             <td>$price</td>
                             <td>$days</td>
                             <td>$status</td>

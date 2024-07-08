@@ -251,16 +251,17 @@ if ($action == 'suspend_travel') {
 
 if ($action == 'get_all_travel_records') {
 
+    $limit=3;
     $query = "SELECT * FROM travel WHERE status=1";
     $query_res = mysqli_query($conn, $query);
     if ($query_res) {
-
         $total_records = mysqli_num_rows($query_res);
+        $records=$total_records;
         while ($total_records != 0) {
             $records_arr[] = mysqli_fetch_assoc($query_res);
             $total_records--;
         }
-        $response = ['success' => true, 'msg' => 'Records fetched successfully!', 'data' => $records_arr];
+        $response = ['success' => true, 'msg' => 'Records fetched successfully!', 'data' => $records_arr,'total_records'=>$records,'pages'=>ceil($records/$limit)];
     } else {
         $response = ['success' => false, 'msg' => 'Failue'];
     }

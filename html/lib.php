@@ -72,23 +72,26 @@ function sidenavbar()
                     <td id="row_data" >
                     <i class="bi bi-house"></i><a href="index.php" id="nav_link">Home</a>
                     </td>
-                </tr>
+                </tr>';
+    if (is_siteadmin()) {
+        echo '
                 <tr id=\'table_row_category\' selected="false">
                     <td id="row_data">
                     <i class="bi bi-house"></i><a href="category.php" id="nav_link">Category</a>
                     </td>
-                </tr>
-                <tr id=\'table_row_trip\' selected="false">
+                </tr>';
+        echo ' <tr id=\'table_row_trip\' selected="false">
                     <td id="row_data">
                     <i class="bi bi-house"></i><a href="locations.php" id="nav_link">Trips</a>
                     </td>
-                </tr>
-                <tr id=\'table_row_bookings\' selected="false">
+                </tr>';
+    }
+    echo '<tr id=\'table_row_bookings\' selected="false">
                     <td id="row_data">
                     <i class="bi bi-house"></i><a href="#" id="nav_link">Bookings</a>
                     </td>
-                </tr>
-                <tr id=\'table_row_payments\' selected="false">
+                </tr>';
+    echo ' <tr id=\'table_row_payments\' selected="false">
                     <td id="row_data">
                     <i class="bi bi-house"></i><a href="#" id="nav_link">Payments</a>
                     </td>
@@ -367,7 +370,7 @@ function confirmation_email_template($customer_name, $date, $location)
 function get_all_states_of_india()
 {
     $statesOfIndia = [
-        0 =>'Select State',
+        0 => 'Select State',
         1 => "Andhra Pradesh",
         2 => "Arunachal Pradesh",
         3 => "Assam",
@@ -398,4 +401,19 @@ function get_all_states_of_india()
         28 => "West Bengal"
     ];
     return $statesOfIndia;
+}
+
+function is_siteadmin()
+{
+    $login_user_data = is_login();
+    if ($login_user_data != false) {
+        // die($login_user_data->data->role);
+        if ($login_user_data->data->role == 'admin') {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
 }
