@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 02, 2024 at 11:57 AM
+-- Generation Time: Jul 08, 2024 at 01:14 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -20,6 +20,38 @@ SET time_zone = "+00:00";
 --
 -- Database: `travel_booking_system`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bookings`
+--
+
+DROP TABLE IF EXISTS `bookings`;
+CREATE TABLE IF NOT EXISTS `bookings` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `userid` int NOT NULL,
+  `travelid` int NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `phone` int NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `address` text NOT NULL,
+  `city` text NOT NULL,
+  `state` int NOT NULL,
+  `zipcode` int NOT NULL,
+  `seats` int NOT NULL,
+  `status` int NOT NULL,
+  `timecreated` int NOT NULL,
+  `timemodified` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `bookings`
+--
+
+INSERT INTO `bookings` (`id`, `userid`, `travelid`, `name`, `phone`, `email`, `address`, `city`, `state`, `zipcode`, `seats`, `status`, `timecreated`, `timemodified`) VALUES
+(1, 117, 107, 'vijay', 2147483647, '', 'faridabad hariyana', 'faridabad', 8, 123456, 1, 1, 1720441632, 0);
 
 -- --------------------------------------------------------
 
@@ -80,6 +112,56 @@ INSERT INTO `category` (`id`, `name`, `status`, `timecreated`, `timemodified`) V
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `orders`
+--
+
+DROP TABLE IF EXISTS `orders`;
+CREATE TABLE IF NOT EXISTS `orders` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `userid` int NOT NULL,
+  `travelid` int NOT NULL,
+  `reciept` varchar(100) NOT NULL,
+  `order_id` varchar(255) NOT NULL,
+  `amount` int NOT NULL,
+  `currency` char(50) NOT NULL,
+  `payment_id` varchar(255) NOT NULL,
+  `entity` varchar(100) NOT NULL,
+  `attempts` int NOT NULL,
+  `status` text NOT NULL,
+  `created_at` int NOT NULL,
+  `timecreated` int NOT NULL,
+  `timemodified` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`id`, `userid`, `travelid`, `reciept`, `order_id`, `amount`, `currency`, `payment_id`, `entity`, `attempts`, `status`, `created_at`, `timecreated`, `timemodified`) VALUES
+(1, 109, 111, '1720430781668bb0bdc5229', 'order_OW5W3oNqOPW2K8', 47197, 'INR', 'pay_OW5W9zGTlyvMJF', 'order', 0, 'paid', 1720430789, 1720430782, 0),
+(2, 109, 106, '1720432695668bb837cea86', 'order_OW63lEcJVKvMjW', 926, 'INR', 'pay_OW63rs69ydkuDi', 'order', 0, 'paid', 1720432703, 1720432697, 0),
+(3, 117, 108, '1720434123668bbdcba6194', 'order_OW6SuIdUFCVaWn', 45288, 'INR', '', 'order', 0, 'created', 1720434132, 1720434125, 0),
+(4, 117, 106, '1720434231668bbe3771871', 'order_OW6UmNIXFzaeEz', 926, 'INR', '', 'order', 0, 'created', 1720434238, 1720434231, 0),
+(5, 117, 110, '1720434312668bbe882b48f', 'order_OW6WCPjYYWzPiT', 9257, 'INR', '', 'order', 0, 'created', 1720434319, 1720434312, 0),
+(6, 117, 107, '1720434535668bbf671d7ae', 'order_OW6a7osmzIv9Ss', 9273, 'INR', '', 'order', 0, 'created', 1720434542, 1720434535, 0),
+(7, 117, 108, '1720434611668bbfb3e1ea7', 'order_OW6bTevpVSUpMR', 22644, 'INR', '', 'order', 0, 'created', 1720434618, 1720434612, 0),
+(8, 117, 111, '1720434718668bc01e9db3e', 'order_OW6dMAB5CzgHIz', 23598, 'INR', '', 'order', 0, 'created', 1720434725, 1720434718, 0),
+(9, 117, 107, '1720435205668bc205dde6f', 'order_OW6lwphg53DHs6', 18547, 'INR', '', 'order', 0, 'created', 1720435213, 1720435206, 0),
+(10, 117, 107, '1720437626668bcb7a1622f', 'order_OW7SZDevcwEhyd', 9273, 'INR', '', 'order', 0, 'created', 1720437634, 1720437627, 0),
+(11, 117, 107, '1720437628668bcb7c0d42b', 'order_OW7SaJxHLa6Jj9', 9273, 'INR', '', 'order', 0, 'created', 1720437635, 1720437628, 0),
+(12, 117, 107, '1720438360668bce5850985', 'order_OW7fUfDZ6B7xRI', 9273, 'INR', '', 'order', 0, 'created', 1720438368, 1720438361, 0),
+(13, 117, 107, '1720438364668bce5c62e83', 'order_OW7fXhXSseEqud', 9273, 'INR', '', 'order', 0, 'created', 1720438371, 1720438364, 0),
+(14, 117, 107, '1720438400668bce80c6778', 'order_OW7gCRA2Z8gtTN', 9273, 'INR', '', 'order', 0, 'created', 1720438408, 1720438401, 0),
+(15, 117, 107, '1720438432668bcea052840', 'order_OW7gjwQQ9Q12y2', 9273, 'INR', '', 'order', 0, 'created', 1720438439, 1720438432, 0),
+(16, 117, 107, '1720438471668bcec723efc', 'order_OW7hQBh1oMaQfz', 9273, 'INR', '', 'order', 0, 'created', 1720438478, 1720438471, 0),
+(17, 117, 107, '1720441325668bd9eda4327', 'order_OW8VhJTkkYFCKn', 9273, 'INR', '', 'order', 0, 'created', 1720441333, 1720441326, 0),
+(18, 117, 107, '1720441516668bdaac70f07', 'order_OW8Z2O8rypqgXW', 9273, 'INR', '', 'order', 0, 'created', 1720441523, 1720441516, 0),
+(19, 117, 107, '1720441632668bdb201df68', 'order_OW8b4aSU0jkXPa', 9273, 'INR', '', 'order', 0, 'created', 1720441639, 1720441632, 0);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `travel`
 --
 
@@ -129,7 +211,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `timecreated` int NOT NULL,
   `timemodified` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=115 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=118 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `user`
@@ -143,7 +225,8 @@ INSERT INTO `user` (`id`, `username`, `email`, `password`, `role`, `confirmed`, 
 (111, 'vivek', 'wekoloy907@gawte.com', 'Welcome@1234', 'user', 1, 0, 1718868872, 0),
 (112, 'vinay', 'gogom62168@lisoren.com', '', 'user', 0, 0, 1718870050, 0),
 (113, 'sonu', 'kivajob516@mposhop.com', 'Admin@123', 'user', 1, 0, 1719484307, 0),
-(114, 'dheeraj', 'xobidic798@mposhop.com', 'Login@1234#', 'user', 1, 0, 1719485311, 0);
+(114, 'dheeraj', 'xobidic798@mposhop.com', 'Login@1234#', 'user', 1, 0, 1719485311, 0),
+(117, 'rahul', 'jiwer45902@furnato.com', 'Admin@12', 'user', 1, 0, 1720434004, 0);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
