@@ -48,16 +48,12 @@ include('header.php');
 
         }
 
-        .btn-primary {
-            margin-bottom: 20px;
-            margin-left: 15px;
-        }
-
+      
         #price-tag {
-            margin-left: 50px;
+            margin-left: 20px;
+            margin-right: 25%;
             font-size: 20px;
             font-weight: bold;
-            margin: 30 auto;
         }
 
         #card_image {
@@ -201,8 +197,8 @@ include('header.php');
                         </div>
 
                         <div>
-                            <button class="btn btn-primary">Book Now</button>
-                             <span id="price-tag">${price}</span>
+                        <span id="price-tag"><i class="fa fa-inr" aria-hidden="true"></i> ${price}</span>
+                            <a href='checkout.php?id=${id}' class="btn btn-primary">Book Now</a>
                         </div>
                         </div>`;
 

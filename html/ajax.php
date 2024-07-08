@@ -12,7 +12,7 @@ session_start();
 
 $data = json_decode(file_get_contents('php://input'), true);
 $action = $data['action'];
-// var_dump($action);
+
 if ($action == 'signup' || $action == 'otp_verification') {
     global $otp;
     if ($action == 'signup') {
@@ -38,8 +38,8 @@ if ($action == 'signup' || $action == 'otp_verification') {
             $_SESSION['email'] = $data['email'];
             $_SESSION['otp'] = $otp;
             $_SESSION['otp_exipration_time'] = time() + 180;
-            $body = "Your one time password for the account creation is  $otp, Please verify and do not share it with anyone.
-            Thank You ";
+            $body = "<P>Your one time password for the account creation is  $otp, Please verify and do not share it with anyone.
+            Thank You </p>";
             send_email($email, $subject, $body);
 
             $res = mysqli_query($conn, $querry);
@@ -273,7 +273,6 @@ if ($action == 'create_booking') {
     $amount = $data['amount'];
     $city = $data['city'];
     $name = $data['name'];
-    $email = $data['email'];
     $phone = $data['phone'];
     $state = $data['state'];
     $travelid = $data['travelid'];
@@ -283,7 +282,7 @@ if ($action == 'create_booking') {
     $seats = $data['seats'];
     $timecreated = time();
 
-    $query = "insert into bookings(userid,travelid,name,phone,email,address,city,state,zipcode,seats,status,timecreated) values('$userid','$travelid','$name','$phone','$email','$address','$city','$state','$zipcode','$seats','$status','$timecreated')";
+    $query = "insert into bookings(userid,travelid,name,phone,address,city,state,zipcode,seats,status,timecreated) values('$userid','$travelid','$name','$phone','$address','$city','$state','$zipcode','$seats','$status','$timecreated')";
 
     $query_res = mysqli_query($conn, $query);
     if ($query_res) {
@@ -296,23 +295,41 @@ if ($action == 'create_booking') {
 }
 
 if ($action == 'create_order') {
-    $amount=$data['amount'];
-    
+    $amount = $data['amount'];
+    $userid = $data['userid'];
+    $travelid = $data['travelid'];
+    $reciept_id = RECIEPT_ID;
+
     $api_key = API_KEY; // Replace with your Key ID
     $api_secret = API_SECRET; // Replace with your Key Secret
     $api = new Api($api_key, $api_secret);
-    
+
     $orderData = [
-        'receipt'         => RECIEPT_ID,
-        'amount'          => $amount, // Amount in paise (₹10.00)
+        'receipt'         => $reciept_id,
+        'amount'          => $amount * 100, // Amount in paise (₹10.00)
         'currency'        => 'INR',
         'payment_capture' => 1 // Auto capture
     ];
-    
     $razorpayOrder = $api->order->create($orderData);
-    $data=['order_id'=>$razorpayOrder['id'],'amount'=>$razorpayOrder['amount'],'api_key'=>API_KEY, 'currency'=>'INR','entity'=>$razorpayOrder['entity'],'created_at'=>$razorpayOrder['created_at']];
-    
-    $response = ['success' => true, 'msg' => 'Order Created Successfully!','data'=>$data];
+
+    $order_id = $razorpayOrder['id'];
+    $currency = 'INR';
+    $entity = $razorpayOrder['entity'];
+    $created_at = $razorpayOrder['created_at'];
+    $attempts = $razorpayOrder['attempts'];
+    $status = $razorpayOrder['status'];
+    $created_at = $razorpayOrder['created_at'];
+    $timecreated = time();
+
+    $data = ['order_id' => $order_id, 'amount' => $razorpayOrder['amount'], 'api_key' => API_KEY, 'currency' => 'INR', 'entity' => $entity, 'created_at' => $created_at];
+    $query = "insert into orders(userid,travelid,reciept,order_id,amount,currency,entity,attempts,status,created_at,timecreated) values('$userid','$travelid','$reciept_id','$order_id','$amount','$currency','$entity','$attempts','$status','$created_at','$timecreated')";
+    $query_res = mysqli_query($conn, $query);
+
+    if ($query_res) {
+        $response = ['success' => true, 'msg' => 'Order Created Successfully!', 'data' => $data];
+    } else {
+        $response = ['success' => false, 'msg' => 'Something Went Wrong!'];
+    }
     echo json_encode($response);
     exit;
 }

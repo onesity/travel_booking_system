@@ -110,7 +110,7 @@ window.addEventListener('load', () => {
                                 if (response.success == true) {
                                     success_modal(response.msg);
                                     setTimeout(() => {
-                                        window.location.href = "http://localhost/travel_booking_system/travel_booking_system/login.php";
+                                        window.location.href = "http://localhost/travel_booking_system/travel_booking_system/html/login.php";
                                     }, 3000)
 
                                 } else {
@@ -137,7 +137,6 @@ window.addEventListener('load', () => {
                             }
                         })
                     })
-
 
                 } else {
                     email_error.innerHTML = response.msg;

@@ -1,6 +1,12 @@
 <?php
-include('header.php');
-$login_user = is_login()->data;
+require_once('lib.php');
+if (is_login() == false) {
+    header('Location:login.php');
+} else {
+    include('header.php');
+
+    $login_user = is_login()->data;
+}
 // var_dump($login_user->userid);
 
 if (isset($_GET['id'])) {
@@ -59,9 +65,9 @@ if (isset($_GET['id'])) {
 
         .detail-top-div {
             width: 94%;
-            height: 25%;
+            height: 10%;
             margin-left: 3%;
-            /* background-color: white; */
+            background-color: white;
             margin-top: 3%;
         }
 
@@ -70,19 +76,25 @@ if (isset($_GET['id'])) {
             height: 20%;
             margin-left: 3%;
             /* background-color: white; */
-            margin-top: 12%;
+            margin-top: 2%;
         }
 
         .top-detail-card {
             margin-top: 20px;
-            background-color: white;
+            /* background-color: white; */
             display: flex;
         }
 
         #top-detail-card-img {
             height: 100%;
             width: 25%;
-            margin-top: 7%;
+            margin-top: 4%;
+            margin-bottom: 4%;
+        }
+
+        img#top-detail-card-img {
+            margin-left: 0px;
+            margin-top: 33px;
         }
 
         .detail-top-card-details-div {
@@ -93,22 +105,40 @@ if (isset($_GET['id'])) {
         }
 
         #price-tag {
-            margin-top: 50px;
-            margin-left: 65%;
+            margin-top: 40px;
+            margin-left: 60%;
         }
 
         #title-tag {
-            margin-top: 10%;
+            margin-top: 4%;
 
         }
 
-        #card-desc {
-            margin-top: 20px;
+        p#card-desc {
+            margin-bottom: 0;
+            text-align: left;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         #count-seat {
             width: 70px;
             border: none;
+        }
+
+        span#name_error,
+        #email_error,
+        #zip_error,
+        #address_error,
+        #city_error,
+        #state_error,
+        #phone_error {
+            color: red;
+            margin-left: 3px;
+            display: none;
         }
     </style>
 </head>
@@ -127,30 +157,39 @@ if (isset($_GET['id'])) {
                                 <div class="form-group">
                                     <label for="name">Name</label>
                                     <input type="text" class="form-control" id="name" name="name" required>
+                                    <span id="name_error" class="errors">username error</span>
                                 </div>
-                                <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" required>
-                                </div>
+
                                 <div class="form-group">
                                     <label for="address">Phone</label>
                                     <input type="number" class="form-control" id="phone" name="phone" required>
+                                    <span id="phone_error">phone error</span>
                                 </div>
                                 <div class="form-group">
                                     <label for="address">Address</label>
                                     <input type="text" class="form-control" id="address" name="address" required>
+                                    <span id="address_error">addres error</span>
                                 </div>
                                 <div class="form-group">
                                     <label for="city">City</label>
                                     <input type="text" class="form-control" id="city" name="city" required>
+                                    <span id="city_error">city error</span>
                                 </div>
                                 <div class="form-group">
-                                    <label for="state">State</label>
-                                    <input type="text" class="form-control" id="state" name="state" required>
+                                    <select name="state" id="state" class="form-control">
+                                        <?php
+                                        foreach (get_all_states_of_india() as $key => $value) {
+                                            echo "<option value='$key'>$value</option>";
+                                        }
+
+                                        ?>
+                                    </select>
+                                    <span id="state_error">state error</span>
                                 </div>
                                 <div class="form-group">
                                     <label for="zip">Zip Code</label>
-                                    <input type="text" class="form-control" id="zip" name="zip" required>
+                                    <input type="number" class="form-control" id="zip" name="zip" required>
+                                    <span id="zip_error">zip error</span>
                                 </div>
                                 <button id="payButton" class="btn btn-primary btn-block">Pay Now</button>
                                 <form id="checkoutForm" method="POST" action="verify.php">
@@ -175,7 +214,7 @@ if (isset($_GET['id'])) {
                     <div class="detail-top-card-details-div">
                         <h2 id="title-tag"><?php echo $title; ?></h2>
                         <p id="card-desc"><?php echo $description; ?></p>
-                        <h5 id="price-tag">Price: <?php echo $price; ?></h5>
+                        <h5 id="price-tag">Price: <i class="fa fa-inr" aria-hidden="true"></i> <?php echo $price; ?></h5>
                     </div>
                 </div>
             </div>
@@ -201,7 +240,7 @@ if (isset($_GET['id'])) {
                 <h4 id="total-ammount">GST: 18% </h4>
                 <h4 id="gst-ammount">GST amount: <?php echo $gst_amount; ?> </h4>
                 <hr style="width: 90%; height: 2px; background-color: black;">
-                <h4 id="grand-total">Grand Total:<?php echo $price + $gst_amount; ?> </h4>
+                <h4 id="grand-total">Grand Total:<?php echo floor($price + $gst_amount); ?> </h4>
                 <hr style="width: 90%; height: 2px; background-color: black;">
             </div>
 
@@ -212,7 +251,39 @@ if (isset($_GET['id'])) {
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script>
+    <script type="module">
+        import {
+            success_modal,
+            validateEmail,
+            validatePassword,
+            validateUsername,
+            validateIndianPhoneNumber,
+            validateAddress,
+            validateCity,
+            validateState,
+            validateZipcode
+        } from '../js/functions.js';
+        const name = document.getElementById('name');
+        const name_error = document.getElementById('name_error');
+
+
+        const phone = document.getElementById('phone');
+        const phone_error = document.getElementById('phone_error');
+
+        const address = document.getElementById('address');
+        const address_error = document.getElementById('address_error');
+
+        const city = document.getElementById('city');
+        const city_error = document.getElementById('city_error');
+
+        const state = document.getElementById('state');
+        const state_error = document.getElementById('state_error');
+
+        const zip = document.getElementById('zip');
+        const zip_error = document.getElementById('zip_error');
+
+        const userid = document.getElementById('userid');
+        const travelid = document.getElementById('travelid');
         const count_seat = document.getElementById('count-seat');
         const sub_total = document.getElementById('sub-total');
         const gst_ammount = document.getElementById('gst-ammount');
@@ -221,24 +292,91 @@ if (isset($_GET['id'])) {
         const price = "<?php echo $price; ?>";
         let total_ammount = ((price * count_seat.value) + ((price * count_seat.value) * 18) / 100);
 
-        const name = document.getElementById('name');
-        const email = document.getElementById('email');
-        const phone = document.getElementById('phone');
-        const address = document.getElementById('address');
-        const city = document.getElementById('city');
-        const state = document.getElementById('state');
-        const zip = document.getElementById('zip');
-        const userid = document.getElementById('userid');
-        const travelid = document.getElementById('travelid');
+
 
         document.getElementById('payButton').onclick = function(e) {
             e.preventDefault();
+            let errors = [];
+
+            var usernameRes = validateUsername(name.value);
+            if (usernameRes.status == true) {
+                name_error.style.display = 'none';
+                name.style.border = '1px solid green';
+            } else {
+                name_error.innerHTML = usernameRes.message;
+                name.style.border = '1px solid red';
+                name_error.style.display = 'block';
+                errors['name'] = 'name_error';
+            }
+
+            var phoneRes = validateIndianPhoneNumber(phone.value)
+            if (phoneRes.status == true) {
+                phone_error.style.display = 'none';
+                phone.style.border = '1px solid green';
+
+            } else {
+                phone_error.innerHTML = phoneRes.message;
+                phone.style.border = '1px solid red';
+                phone_error.style.display = 'block';
+                errors['phone'] = 'phone_error';
+            }
+
+            var addressRes = validateAddress(address.value)
+            if (addressRes.status == true) {
+                address_error.style.display = 'none';
+                address.style.border = '1px solid green';
+
+            } else {
+                address_error.innerHTML = addressRes.message;
+                address.style.border = '1px solid red';
+                address_error.style.display = 'block';
+                errors['address'] = 'address_error';
+
+            }
+
+            var cityRes = validateCity(city.value)
+            if (cityRes.status == true) {
+                city_error.style.display = 'none';
+                city.style.border = '1px solid green';
+
+            } else {
+                city_error.innerHTML = cityRes.message;
+                city.style.border = '1px solid red';
+                city_error.style.display = 'block';
+                errors['city'] = 'city_error';
+
+            }
+
+            var stateRes = validateState(state.value)
+            if (stateRes.status == true) {
+                state_error.style.display = 'none';
+                state.style.border = '1px solid green';
+
+            } else {
+                state_error.innerHTML = stateRes.message;
+                state.style.border = '1px solid red';
+                state_error.style.display = 'block';
+                errors['state'] = 'state_error';
+
+            }
+
+            var zipRes = validateZipcode(zip.value)
+            if (zipRes.status == true) {
+                zip_error.style.display = 'none';
+                zip.style.border = '1px solid green';
+
+            } else {
+                zip_error.innerHTML = zipRes.message;
+                zip.style.border = '1px solid red';
+                zip_error.style.display = 'block';
+                errors['zip'] = 'zip_error';
+
+            }
 
             let booking_data = {
                 action: 'create_booking',
                 userid: userid.value,
                 name: name.value,
-                email: email.value,
                 phone: phone.value,
                 address: address.value,
                 city: city.value,
@@ -248,68 +386,72 @@ if (isset($_GET['id'])) {
                 seats: count_seat.value,
                 amount: ((price * count_seat.value) + ((price * count_seat.value) * 18) / 100)
             }
-            fetch('http://localhost/travel_booking_system/travel_booking_system/html/ajax.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(booking_data)
-            }).then((res) => {
-                return res.json();
-            }).then((res) => {
-                if (res.success == true) {
-                    const create_order_data = {
-                        action: 'create_order',
-                        amount: parseInt(((price * count_seat.value) + ((price * count_seat.value) * 18) / 100))
-                    }
-                    fetch('http://localhost/travel_booking_system/travel_booking_system/html/ajax.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(create_order_data)
-                    }).then((res) => {
-                        return res.json();
-                    }).then((res) => {
+            if (Object.keys(errors).length == 0) {
+                fetch('http://localhost/travel_booking_system/travel_booking_system/html/ajax.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(booking_data)
+                }).then((res) => {
+                    return res.json();
+                }).then((res) => {
+                    if (res.success == true) {
+                        const create_order_data = {
+                            action: 'create_order',
+                            amount: parseInt(((price * count_seat.value) + ((price * count_seat.value) * 18) / 100)),
+                            userid: userid.value,
+                            travelid: travelid.value
 
-                        if (res.success == true) {
-                            const data = res.data;
-                            var options = {
-                                "key": data['api_key'],
-                                "amount": data['amount'] * 100,
-                                "currency": "INR",
-                                "name": name,
-                                "description": "This is test payment description.",
-                                "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3420502Ztc7RjaetY17CYvJv3m21wM14scg&s",
-                                order_id: res.data['order_id'],
-                                "handler": function(response) {
-
-                                    document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
-                                    document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
-                                    document.getElementById('razorpay_signature').value = response.razorpay_signature;
-                                    document.getElementById('checkoutForm').submit();
-                                },
-                                "prefill": {
-                                    "name": name,
-                                    "email": email,
-                                    "contact": phone
-                                },
-                                "notes": {
-                                    "address": "Razorpay Corporate Office"
-                                },
-                                "theme": {
-                                    "color": "white"
-                                }
-                            };
-
-                            var rzp1 = new Razorpay(options);
-                            rzp1.open();
                         }
-                    })
+                        fetch('http://localhost/travel_booking_system/travel_booking_system/html/ajax.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(create_order_data)
+                        }).then((res) => {
+                            return res.json();
+                        }).then((res) => {
 
-                }
-            })
+                            if (res.success == true) {
+                                const data = res.data;
+                                var options = {
+                                    "key": data['api_key'],
+                                    "amount": data['amount'],
+                                    "currency": "INR",
+                                    "name": name,
+                                    "description": "This is test payment description.",
+                                    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3420502Ztc7RjaetY17CYvJv3m21wM14scg&s",
+                                    order_id: res.data['order_id'],
+                                    "handler": function(response) {
 
+                                        document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+                                        document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+                                        document.getElementById('razorpay_signature').value = response.razorpay_signature;
+                                        document.getElementById('checkoutForm').submit();
+                                    },
+                                    "prefill": {
+                                        "name": name,
+                                        "email": 'bad@bb.dfg',
+                                        "contact": phone
+                                    },
+                                    "notes": {
+                                        "address": "Razorpay Corporate Office"
+                                    },
+                                    "theme": {
+                                        "color": "white"
+                                    }
+                                };
+
+                                var rzp1 = new Razorpay(options);
+                                rzp1.open();
+                            }
+                        })
+
+                    }
+                })
+            }
         }
         count_seat.addEventListener('change', () => {
 
