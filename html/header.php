@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     
+    
     <link rel="stylesheet" href="../css/page_style.css">
     
     <link rel="stylesheet" href="../css/style.css">
@@ -169,7 +170,9 @@
 <body>
     <header class="header">
         <div class="logo">
+            <a href="index.php">
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3420502Ztc7RjaetY17CYvJv3m21wM14scg&s" alt="Logo">
+            </a>
         </div>
         <div class="nav-auth">
             <nav class="nav">

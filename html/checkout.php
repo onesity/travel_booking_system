@@ -49,13 +49,15 @@ if (isset($_GET['id'])) {
             margin-left: 2%;
             margin-top: 2%;
             margin-bottom: 2%;
-            background-color: lightblue;
+            /* background-color: lightblue; */
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
             height: auto;
         }
 
         .checkout-right-div {
             margin-left: 2%;
             background-color: lightblue;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
             margin-top: 2%;
             margin-bottom: 2%;
             width: 40%;
@@ -64,10 +66,11 @@ if (isset($_GET['id'])) {
         }
 
         .detail-top-div {
-            width: 94%;
+            width: 100%;
             height: 10%;
-            margin-left: 3%;
+            margin-left: 0%;
             background-color: white;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
             margin-top: 3%;
         }
 

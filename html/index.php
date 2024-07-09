@@ -88,6 +88,7 @@ include('header.php');
 
         #carouselExampleAutoplaying {
             margin-top: 2%;
+            box-shadow: 0 26px 58px 0 rgba(0, 0, 0, .22), 0 5px 14px 0 rgba(0, 0, 0, .18);
 
         }
 
@@ -104,7 +105,32 @@ include('header.php');
         .card-title {
             font-weight: 600;
         }
+
+        #search {
+            height: 40px;
+            box-shadow: 0 26px 58px 0 rgba(0, 0, 0, .22), 0 5px 14px 0 rgba(0, 0, 0, .18);
+            margin-left: 49%;
+            margin-top: 35px;
+            width: 30%;
+
+        }
+
+        img#nodatafoundimage {
+            width: 55%;
+            height: 100%;
+            margin-left: 25%;
+        }
+
+        .filter-div {
+            display: flex;
+        }
+
+        #total_records {
+            margin-top: 35px;
+            margin-left: 2%;
+        }
     </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 </head>
 
@@ -131,114 +157,33 @@ include('header.php');
             <span class="visually-hidden">Next</span>
         </button>
     </div>
-    <div class="card-deck">
+    <div class="filter-div">
+        <h3 id="total_records"></h3>
+        <input type="text" class="form-control" id="search" placeholder="Search...">
     </div>
 
-    <nav aria-label="...">
-        <ul class="pagination justify-content-end" id='pagination'>
+    <div class="card-deck"></div>
 
-            <!-- <li class="page-item disabled">
-                <span class="page-link">Previous</span>
-            </li> -->
-
-            <!-- <li class="page-item active">
-                <span class="page-link">
-                    2 <span class="sr-only">(current)</span>
-                </span>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">3</a>
-            </li> -->
-            <!-- <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-            </li> -->
-        </ul>
-    </nav>
-
-
-
+    <div class="category-section">
+    </div>
+    <div id="data-container"></div>
+    <div id="pagination-container"></div>
+    <script src="../js/pagination.js"></script>
     <script>
-        window.addEventListener('load', () => {
-            const get_all_records_parameters = {
-                action: 'get_all_travel_records'
+        $('#pagination-container').pagination({
+            dataSource: [1, 2, 3, 4, 5, 6, 7, 195],
+            callback: function(data, pagination) {
+                // template method of yourself
+                var html = template(data);
+                $('#data-container').html(html);
             }
-            fetch('http://localhost/travel_booking_system/travel_booking_system/html/ajax.php', {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify(get_all_records_parameters)
-            }).then((r) => {
-                return r.json();
-            }).then((res) => {
-                const inner_div = document.createElement('div');
-                inner_div.setAttribute('class', 'inner_div');
-                const card_deck = document.querySelector('.card-deck');
-                if (res.success == true) {
-
-                    console.log(res);
-                    res.data.forEach((e) => {
-                        // console.log(e);
-                        let id = e.id;
-                        let title = e.title;
-                        let description = e.description;
-                        let image = e.image;
-                        let days = e.days;
-                        let price = e.price;
-
-
-                        const card_body = `
-                       <div class="main_card_body">
-                        <a href="../html/details.php?id=${id}" id="card_image_link"> 
-                        <img class="card-img-top" id="card_image" src="../${image}" alt="Card image cap">
-                        </a>
-                 
-                        <div class="card-body">
-                            <h5 class="card-title">${title}</h5>
-                            <p class="card-text">${description}</p>
-                        </div>
-
-                        <div>
-                        <span id="price-tag"><i class="fa fa-inr" aria-hidden="true"></i> ${price}</span>
-                            <a href='checkout.php?id=${id}' class="btn btn-primary">Book Now</a>
-                        </div>
-                        </div>`;
-
-                        const card = document.createElement('div');
-                        card.setAttribute('class', 'card');
-                        card.innerHTML = card_body;
-                        card_deck.append(card);
-
-                    })
-                    const paginatoin_ul = document.getElementById('pagination');
-                    let pagination_li='<li class="page-item disabled"><span class="page-link">Previous<span></li>';
-                    for (let i = 1; i <= res.pages; i++) {
-                        pagination_li+= '<li class="page-item " data-id="'+ i +'"><span class="page-link">' + i +'<span class="sr-only">(current)</span></span></li>';
-                    }
-                    pagination_li+=' <li class="page-item"><a class="page-link" href="#">Next</a></li>';
-                    paginatoin_ul.innerHTML=pagination_li;
-                    const paginations = document.querySelectorAll('pagination');
-                    
-                    // paginations.addEventListener('click',()=>{
-                        paginations.forEach((e)=>{
-                            console.log(e)
-                        })
-                        
-                    // })
-
-                }
-            })
-
-
-
-
         })
     </script>
 
+    <script src="../js/index.js"></script>
 </body>
 
 </html>
-
 
 <?php
 

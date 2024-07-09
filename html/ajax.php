@@ -250,20 +250,29 @@ if ($action == 'suspend_travel') {
 }
 
 if ($action == 'get_all_travel_records') {
-
-    $limit=3;
-    $query = "SELECT * FROM travel WHERE status=1";
+    $limit = 3;
+    $search_key = $data['search_key'];
+    if ($search_key == '') {
+        $query = "SELECT * FROM travel WHERE status=1 order by title asc";
+    } else {
+        $query = "SELECT * FROM travel WHERE status=1 and title like '%$search_key%' order by title asc";
+    }
     $query_res = mysqli_query($conn, $query);
+    $total_records = mysqli_num_rows($query_res);
     if ($query_res) {
-        $total_records = mysqli_num_rows($query_res);
-        $records=$total_records;
+        $records = $total_records;
+        $records_arr = [];
         while ($total_records != 0) {
             $records_arr[] = mysqli_fetch_assoc($query_res);
             $total_records--;
         }
-        $response = ['success' => true, 'msg' => 'Records fetched successfully!', 'data' => $records_arr,'total_records'=>$records,'pages'=>ceil($records/$limit)];
+        if ($records != 0) {
+            $response = ['success' => true, 'msg' => 'Records fetched successfully!', 'data' => $records_arr, 'total_records' => $records, 'pages' => ceil($records / $limit)];
+        } else {
+            $response = ['success' => true, 'msg' => 'No records found', 'total_records' => $records, 'pages' => ceil($records / $limit)];
+        }
     } else {
-        $response = ['success' => false, 'msg' => 'Failue'];
+        $response = ['success' => false, 'msg' => 'Failed'];
     }
     echo json_encode($response);
     exit;
