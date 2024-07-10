@@ -1,23 +1,10 @@
 <?php
 require_once('lib.php');
-if (is_login() == false) {
+if(is_siteadmin()==false){
     header('Location:index.php');
     exit;
 }
 include('header.php');
-if (is_siteadmin()) {
-    $query = "select u.id,u.username,o.id,t.title,o.travelid,o.amount,o.seats,o.order_id,o.reciept,o.status as payment_status,o.payment_id,o.timecreated,o.timemodified from user u 
-join orders o on u.id=o.userid
- join travel t on o.travelid=t.id order by o.id desc";
-} else {
-    $userid = get_user()->userid;
-    $query = "select u.id,u.username,o.id,t.title,o.travelid,o.amount,o.seats,o.order_id,o.reciept,o.status as payment_status,o.payment_id,o.timecreated,o.timemodified from user u 
-join orders o on u.id=o.userid
- join travel t on o.travelid=t.id where u.id=$userid order by o.id desc";
-}
-$res = mysqli_query($conn, $query);
-$total_record = mysqli_num_rows($res);
-$sr = 1;
 
 ?>
 <!DOCTYPE html>
@@ -103,21 +90,13 @@ $sr = 1;
         <div class="right-div">
             <button id="hamburger_btn">&#x2716;</button>
             <div class="container">
-                <h2 id="page_heading">Bookings </h2>
+                <h2 id="page_heading">Categories </h2>
+                <button type="button" class="btn btn-primary" id='create_btn' data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Create new category</button>
                 <table id="example" class="display" style="width:100%">
                     <thead>
                         <tr>
                             <th>Sr</th>
-                            <?php
-                            if (is_siteadmin()) {
-                                echo '<th>Name</th>';
-                            }
-                            echo '<th>Trip</th>';
-                            ?>
-
-                            <th>Amount</th>
-                            <th>Seats</th>
-                            <th>Payment Status</th>
+                            <th>Name</th>
                             <th>Status</th>
                             <th>Created At</th>
                             <th>Updated At</th>
@@ -127,16 +106,15 @@ $sr = 1;
                     </thead>
                     <tbody>
                         <?php
-
+                        $query = "select * from category order by id desc";
+                        $res = mysqli_query($conn, $query);
+                        $total_record = mysqli_num_rows($res);
+                        $sr = 1;
                         while ($total_record != 0) {
                             $record = mysqli_fetch_assoc($res);
-                            $username = $record['username'];
-                            $trip = $record['title'];
-                            $amount = $record['amount'];
-                            $payment_status = $record['payment_status'];
-                            $seats = $record['seats'];
-                            $status = 'Active';
-                            $timecreated = strtolower(date('d-M-y', $record['timecreated']));
+                            $category_name = $record['name'];
+                            $status = $record['status'];
+                            $timecreated = date('Y-m-d', $record['timecreated']);
                             if ($record['timemodified'] == 0) {
                                 $timemodified = 'NA';
                             } else {
@@ -144,28 +122,16 @@ $sr = 1;
                             }
                             echo "<tr>
                             <td>$sr</td>
-                            ";
-
-                            if (is_siteadmin()) {
-                                echo "<td>$username</td>";
-                            }
-                            echo "<td>$trip</td>";
-                            echo "<td>$amount</td>";
-                            echo "<td>$seats</td>";
-                            echo "<td>$payment_status</td>";
-                            echo "<td>$status</td>";
-                            echo " <td>$timecreated</td>";
-                            echo "<td>$timemodified</td>";
-                            echo "<td>";
-                            echo "
+                            <td>$category_name</td>
+                            <td>$status</td>
+                            <td>$timecreated</td>
+                            <td>$timemodified</td>
+                            <td>
                             <a href='#' title='Edit'><i class='fa fa-pencil-square'></i></a>
-                            ";
-                            if(time()<=$record['timecreated']+(84400*2)){
-                                echo "
-                                <a id='delete_btn' data-id='' data-action='delete_travel' title='Delete'><i class='fa fa-trash'></i></a>
-                                ";
-                            }
-                            echo "</tr>";
+                            <a id='delete_btn' data-id='' data-action='delete_travel' title='Delete'><i class='fa fa-trash'></i></a>
+                            <a data-id='' id='suspend_btn' data-action='suspend_travel' title='Active'><i class='fa fa-eye'></i></a>
+                            </td>
+                            </tr>";
                             $total_record--;
                             $sr++;
                         }
@@ -203,14 +169,62 @@ $sr = 1;
         </div>
     </div>
 
-
     <script>
-        $(document).ready(function() {
+        const form_div = document.querySelector('.modal-content');
+        document.getElementById('submit_btn').addEventListener('click', function(event) {
+
+            const categoryName = document.getElementById('categoryName').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = '';
+
+            const alphanumericPattern = /^[a-zA-Z0-9]+$/;
+            const startsWithAlphabetPattern = /^[a-zA-Z]/;
+
+            if (categoryName === '') {
+                errorMessage.textContent = 'Category name should not be empty.';
+            } else if (categoryName.length < 3) {
+                errorMessage.textContent = 'Category name should be at least 3 characters long.';
+            } else if (!alphanumericPattern.test(categoryName)) {
+                errorMessage.textContent = 'Category name should contain only alphanumeric values.';
+            } else if (!startsWithAlphabetPattern.test(categoryName)) {
+                errorMessage.textContent = 'Category name should start with an alphabet.';
+            } else {
+                var category_data = {
+                    action: 'create_category',
+                    category_name: categoryName
+                };
+                fetch('http://localhost/travel_booking_system/travel_booking_system/ajax.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(category_data)
+                }).then((res) => {
+                    return res.json();
+                }).then((res) => {
+                    if (res.success == true) {
+                        form_div.innerHTML = "<h2 id='success_msg'>" + res.msg + "</h2>";
+                        const success_msg = document.getElementById('success_msg');
+                        success_msg.style.margin = '30px';
+                        setTimeout(() => {
+                            window.location.href =
+                                "http://localhost/travel_booking_system/travel_booking_system/category.php";
+                        }, 3000)
+                    } else {
+                        errorMessage.innerHTML = res.msg;
+                    }
+                })
+            }
+        });
+        
+    </script>
+    <script>
+     $(document).ready(function() {
             $('#example').DataTable({
                 responsive: true
             });
         });
-    </script>
+</script>
 </body>
 <?php
 include('footer.php');

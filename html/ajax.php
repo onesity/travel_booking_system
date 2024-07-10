@@ -199,6 +199,8 @@ if ($action == 'upadte_password') {
 }
 
 if ($action == 'create_category') {
+    var_dump($data);
+    die;
     $name = $data['category_name'];
     $query = "select * from category where name='$name'";
     $res = mysqli_query($conn, $query);
@@ -213,6 +215,58 @@ if ($action == 'create_category') {
         } else {
             $response = ['success' => false, 'msg' => 'Something went wrong!'];
         }
+    }
+    echo json_encode($response);
+    exit;
+}
+
+if ($action == 'delete_category') {
+    $id = $data['id'];
+    if ($id != 0 && $id != null) {
+        if (is_siteadmin() !== false) {
+            $query = "delete from category where id=$id";
+            $query_res = mysqli_query($conn, $query);
+            if ($query_res == true) {
+                $response = ['success' => true, 'msg' => 'Category Deleted Successfully!'];
+            } else {
+                $response = ['success' => false, 'msg' => 'Something went wrong!'];
+            }
+        } else {
+            $response = ['success' => false, 'msg' => 'Current user do not have authorization to delete the user!'];
+        }
+    } else {
+        $response = ['success' => false, 'msg' => 'Invalid category id!'];
+    }
+    echo json_encode($response);
+    exit;
+}
+
+
+if ($action == 'suspend_category') {
+    $id = $data['id'];
+    if ($id != 0 && $id != null) {
+        if (is_siteadmin() !== false) {
+            $base_query = "select * from category where id='$id'";
+            $res = mysqli_query($conn, $base_query);
+            $result = mysqli_fetch_assoc($res);
+            if ($result['status'] == 0) {
+                $query = "update category set status=1 where id='$id'";
+                $msg = 'Activated Successfully!';
+            } else {
+                $query = "update category set status=0 where id='$id'";
+                $msg = 'Suspended Successfully!';
+            }
+            $query_res = mysqli_query($conn, $query);
+            if ($query_res == true) {
+                $response = ['success' => true, 'msg' => $msg];
+            } else {
+                $response = ['success' => false, 'msg' => 'Something went wrong!'];
+            }
+        } else {
+            $response = ['success' => false, 'msg' => 'Current user do not have authorization to suspend the user!'];
+        }
+    } else {
+        $response = ['success' => false, 'msg' => 'Invalid category id!'];
     }
     echo json_encode($response);
     exit;

@@ -444,5 +444,32 @@ function get_user_by_id($id)
     $query_res = mysqli_fetch_assoc(mysqli_query(connect(), $query));
     return $query_res;
 }
-// get_user_by_id(94);
-// var_dump(get_user_by_id(94));
+
+function get_payment_informations($order_id)
+{
+    $api = new Razorpay\Api\Api(API_KEY, API_SECRET);
+    $payment_info = $api->order->fetch($order_id);
+    return $payment_info;
+}
+
+
+function update_payment_status_schedule_task(){
+    $current_time=time();
+    $before_time=$current_time-3600;
+    $query="select order_id from orders where  timecreated between $current_time and $before_time";
+    $query_res=mysqli_query(connect(),$query);
+    if(mysqli_num_rows($query_res)!=0){
+        $total_records=mysqli_num_rows($query_res);
+        while($total_records!=0){
+            $order_data=mysqli_fetch_assoc($query_res);
+            $payment_data=get_payment_informations($order_data['order_id']);
+            return $payment_data;
+        }
+    }else{
+        return false;
+    }
+
+
+}
+
+// die("dsd");

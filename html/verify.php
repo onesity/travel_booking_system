@@ -44,9 +44,7 @@ if ($status == true) {
 		$order_id = $order['order_id'];
 
 		$id = $order['id'];
-
-		$api = new Razorpay\Api\Api(API_KEY, API_SECRET);
-		$order = $api->order->fetch($order_id);
+		$order = get_payment_informations($order_id);
 
 		if ($order['amount'] == $order->amount && $order->amount == $order->amount_paid && $order->status == 'paid') {
 			$query = "update orders set status='$order->status',payment_id='$razorpay_payment_id' where id='$id' and userid='$userid' and order_id='$order_id' and travelid='$travelid'";

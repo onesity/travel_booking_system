@@ -112,6 +112,7 @@ include('header.php');
                         $sr = 1;
                         while ($total_record != 0) {
                             $record = mysqli_fetch_assoc($res);
+                            $id = $record['id'];
                             $category_name = $record['name'];
                             $status = $record['status'];
                             $timecreated = date('Y-m-d', $record['timecreated']);
@@ -122,16 +123,31 @@ include('header.php');
                             }
                             echo "<tr>
                             <td>$sr</td>
-                            <td>$category_name</td>
-                            <td>$status</td>
+                            <td id='cat_$id'>$category_name</td>";
+                            if($status==1){
+                                echo "<td>Active</td>";
+                            }else{
+                                echo "<td>Suspended</td>";
+                            }
+                            echo "
                             <td>$timecreated</td>
                             <td>$timemodified</td>
                             <td>
-                            <a href='#' title='Edit'><i class='fa fa-pencil-square'></i></a>
-                            <a id='delete_btn' data-id='' data-action='delete_travel' title='Delete'><i class='fa fa-trash'></i></a>
-                            <a data-id='' id='suspend_btn' data-action='suspend_travel' title='Active'><i class='fa fa-eye'></i></a>
-                            </td>
-                            </tr>";
+                            <a  title='Edit' id='update_category_btn' data-id='$id' data-bs-toggle='modal' data-bs-target='#exampleModal'><i class='fa fa-pencil-square'></i></a>
+                            <a id='delete_btn' data-id='$id' data-action='delete_category'  title='Delete'><i class='fa fa-trash'></i></a>";
+                            if($status==1){
+                                echo"
+                                <a id='suspend_btn' data-id='$id' data-action='suspend_category'  title='Active'><i class='fa fa-eye'></i></a>
+                                ";
+                                
+                            }else{
+                                echo"
+                                <a id='suspend_btn' data-id='$id' data-action='suspend_category'  title='Active'><i class='fa fa-eye-slash'></i></a>
+                                ";
+
+                            }
+                            echo "</td>
+                                </tr>";
                             $total_record--;
                             $sr++;
                         }
@@ -169,7 +185,19 @@ include('header.php');
         </div>
     </div>
 
+    <div id="deleteModal" class="modal">
+        <div class="delete_modal">
+            <h3 id="close_btn">X</h3>
+            <h2 id="modal_heading">Are You Sure?</h2>
+            <div class="modal_btn_div">
+                <button id="coutinue_btn" class="btn btn-primary">Continue</button>
+                <button id="cancel_btn" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        const update_category_btn=document.querySelectorAll('#update_category_btn');
         const form_div = document.querySelector('.modal-content');
         document.getElementById('submit_btn').addEventListener('click', function(event) {
 
@@ -193,7 +221,7 @@ include('header.php');
                     action: 'create_category',
                     category_name: categoryName
                 };
-                fetch('http://localhost/travel_booking_system/travel_booking_system/ajax.php', {
+                fetch('http://localhost/travel_booking_system/travel_booking_system/html/ajax.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -208,7 +236,7 @@ include('header.php');
                         success_msg.style.margin = '30px';
                         setTimeout(() => {
                             window.location.href =
-                                "http://localhost/travel_booking_system/travel_booking_system/category.php";
+                                "http://localhost/travel_booking_system/travel_booking_system/html/category.php";
                         }, 3000)
                     } else {
                         errorMessage.innerHTML = res.msg;
@@ -216,7 +244,99 @@ include('header.php');
                 })
             }
         });
+        update_category_btn.forEach((e)=>{
+            const category_name=document.get
+            e.addEventListener('click',()=>{
+                let categoryid=e.getAttribute('data-id');
+                let category_name=document.getElementById('cat_'+categoryid);
+                console.log(category_name.innerText);
+                categoryName.value=category_name.innerText;
+                var category_update_data={
+                    action:'update_category',
+                    id:categoryid
+                }
+
+            })
+        })
         
+    </script>
+        <script>
+        window.addEventListener('load', () => {
+            const delete_btn_group = document.querySelectorAll('#delete_btn');
+            const suspend_btn_arr = document.querySelectorAll('#suspend_btn');
+            const deleteModal = document.querySelector('#deleteModal');
+            const delete_modal_content = document.querySelector('.delete_modal');
+            const delete_btn = document.querySelector('#delete_btn');
+            const close_btn = document.getElementById('close_btn');
+            const cancel_btn = document.getElementById('cancel_btn');
+            const continue_btn = document.getElementById('coutinue_btn');
+
+            delete_btn_group.forEach((e) => {
+                e.addEventListener('click', (s) => {
+                    openModal(deleteModal);
+                    continue_btn.setAttribute('data-id', e.getAttribute('data-id'));
+                    continue_btn.setAttribute('data-action', e.getAttribute('data-action'));
+                    process_request(e);
+
+                })
+            })
+
+            suspend_btn_arr.forEach((e) => {
+                e.addEventListener('click', () => {
+                    openModal(deleteModal);
+                    continue_btn.setAttribute('data-id', e.getAttribute('data-id'));
+                    continue_btn.setAttribute('data-action', e.getAttribute('data-action'));
+                    process_request(e);
+
+                })
+            })
+
+            close_btn.addEventListener('click', (e) => {
+                continue_btn.setAttribute('data-id', 0);
+                continue_btn.setAttribute('data-action', 0);
+                closeModal(deleteModal)
+            })
+            cancel_btn.addEventListener('click', () => {
+                continue_btn.setAttribute('data-id', 0);
+                continue_btn.setAttribute('data-action', 0);
+                closeModal(deleteModal);
+            });
+
+            function closeModal(selector) {
+                selector.style.display = 'none';
+            }
+
+            function openModal(selector) {
+                selector.style.display = 'block';
+            }
+
+            function process_request(e) {
+                continue_btn.addEventListener('click', (s) => {
+                    const delete_id = continue_btn.getAttribute('data-id');
+                    const data_action = continue_btn.getAttribute('data-action');
+
+                    const delete_data = {
+                        action: data_action,
+                        id: delete_id
+                    }
+                    fetch("ajax.php", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(delete_data)
+                    }).then((response) => {
+                        return response.json();
+                    }).then((res) => {
+                        delete_modal_content.innerHTML = '<h4 id="deleted_success_msg">' + res.msg + '</h4>';
+                        setTimeout(() => {
+                            window.location.href = "http://localhost/travel_booking_system/travel_booking_system/html/category.php";
+                        }, 3000)
+                    })
+                })
+            }
+
+        })
     </script>
     <script>
      $(document).ready(function() {

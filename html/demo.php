@@ -124,21 +124,21 @@ use Razorpay\Api\Api;
 
 $api_key = API_KEY; // Replace with your Key ID
 $api_secret = API_SECRET; // Replace with your Key Secret
-// $api = new Api($api_key, $api_secret);
+$api = new Api($api_key, $api_secret);
 
-// $orderData = [
-//     'receipt'         => '3456',
-//     'amount'          => 1000, // Amount in paise (₹10.00)
-//     'currency'        => 'INR',
-//     'payment_capture' => 1 // Auto capture
-// ];
+$orderData = [
+    'receipt'         => '3456',
+    'amount'          => 1000, // Amount in paise (₹10.00)
+    'currency'        => 'INR',
+    'payment_capture' => 1 // Auto capture
+];
 
 
 
-$order_id = 'order_OW2gK9K2ZqaQzS';
+$order_id = 'order_OX1Jd8M0P7lpIE';
 
-// $api = new Razorpay\Api\Api($api_key, $api_secret);
-// $order = $api->order->fetch($order_id);
+$api = new Razorpay\Api\Api($api_key, $api_secret);
+$order = $api->order->fetch($order_id);
 
 echo '<pre>';
 print_r($order);

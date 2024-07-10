@@ -167,7 +167,7 @@ include('header.php');
                     </thead>
                     <tbody>
                         <?php
-                        $query = "select * from user order by id desc";
+                        $query = "select * from user where role!='admin' order by id desc";
                         $res = mysqli_query($conn, $query);
                         $total_record = mysqli_num_rows($res);
                         $sr = 1;

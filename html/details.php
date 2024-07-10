@@ -156,6 +156,8 @@ if (isset($_GET['id'])) {
                             <li>Day 4: Seine River Cruise</li>
                             <li>Day 5: Free Day and Departure</li>
                         </ul>
+                        <h2>Note: Cancellation allowed within 2 days from the order created date</h2>
+                        
                     </div>
                     <div class="booking">
                         <?php
