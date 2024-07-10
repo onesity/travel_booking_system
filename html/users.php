@@ -13,13 +13,16 @@ include('header.php');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trip Details Form</title>
-
-    <!-- <link rel="stylesheet" href="../css/page_style.css"> -->
+    <title>Users</title>
+    <link rel="stylesheet" href="css/page_style.css">
     <style>
         .container {
             width: 100%;
             margin: 20px auto;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
         }
 
         .form-container {
@@ -33,15 +36,38 @@ include('header.php');
             margin-bottom: 15px;
         }
 
-        #add_location_btn_link {
-            text-decoration: none;
-            color: white;
+        label {
+            display: block;
+            margin-bottom: 5px;
+            margin-top: 20px;
         }
 
-
-        #travel_image {
+        input[type="text"] {
             width: 100%;
-            height: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .submit-btn {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .submit-btn button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .submit-btn button:hover {
+            background-color: #45a049;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
         }
 
         .modal {
@@ -113,7 +139,6 @@ include('header.php');
             text-overflow: ellipsis;
         }
     </style>
-
 </head>
 
 <body>
@@ -124,20 +149,15 @@ include('header.php');
         <div class="right-div">
             <button id="hamburger_btn">&#x2716;</button>
             <div class="container">
-                <h2 id="page_heading">Add new trip </h2>
-                <button type="button" class="btn btn-primary" id='create_btn'>
-                    <a href="add_location.php" id="add_location_btn_link">Add new trip</a>
-                </button>
+                <h2 id="page_heading">Users List </h2>
+
                 <table id="example" class="display" style="width:100%">
                     <thead>
                         <tr>
                             <th>Sr</th>
-                            <th>Image</th>
-                            <th>Title</th>
-                            <th>Category</th>
-                            <th>Description</th>
-                            <th>Price</th>
-                            <th>Days</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
                             <th>Status</th>
                             <th>Created At</th>
                             <th>Updated At</th>
@@ -147,67 +167,56 @@ include('header.php');
                     </thead>
                     <tbody>
                         <?php
-
-                        $query = "select * from travel order by id desc";
+                        $query = "select * from user order by id desc";
                         $res = mysqli_query($conn, $query);
                         $total_record = mysqli_num_rows($res);
                         $sr = 1;
                         while ($total_record != 0) {
-
                             $record = mysqli_fetch_assoc($res);
                             $id = $record['id'];
-                            $title = $record['title'];
-                            $description = $record['description'];
-                            $price = $record['price'];
-                            $days = $record['days'];
-                            $image = $record['image'];
-                            $status = $record['status'];
-                            $categoryid = $record['categoryid'];
-                            $timecreated = date('Y-m-d', $record['timecreated']);
-
+                            $username = $record['username'];
+                            $email = $record['email'];
+                            $role = $record['role'];
+                            $suspended = $record['suspended'];
+                            $timecreated = strtolower(date('d-M-y', $record['timecreated']));
                             if ($record['timemodified'] == 0) {
                                 $timemodified = 'NA';
                             } else {
-                                $timemodified = date('Y-m-d', $record['timemodified']);
+                                $timemodified = strtolower(date('d-M-y', $record['timemodified']));
                             }
-
-                            $category_res = mysqli_query($conn, "select * from category where id='$categoryid'");
-                            $category_arr = mysqli_fetch_assoc($category_res);
-                            $category_name = $category_arr['name'];
-
                             echo "<tr>
                             <td>$sr</td>
-                            <td><img src='../$image' id='travel_image'></td>
-                            <td>$title</td>
-                            <td>$category_name</td>
-                            <td id='description'>$description</td>
-                            <td>$price</td>
-                            <td>$days</td>
-                            <td>$status</td>
-                            <td>$timecreated</td>
+                            <td>$username</td>
+                            <td>$email</td>
+                            <td>$role</td>
+                            ";
+                            if ($suspended == 0) {
+                                echo "<td>Active</td>";
+                            } else {
+                                echo "<td>Suspended</td>";
+                            }
+                            echo "<td>$timecreated</td>
                             <td>$timemodified</td>
                             <td>
-                            <a href='add_location.php?id=$id' title='Edit'><i class='fa fa-pencil-square'></i></a>
-                            <a id='delete_btn' data-id='$id' data-action='delete_travel' title='Delete'><i class='fa fa-trash'></i></a>
-                            ";
-                            if ($status == 0) {
-                                echo "<a data-id='$id' id='suspend_btn' data-action='suspend_travel' title='Active'><i class='fa fa-eye-slash'></i></a>";
+                            <a href='#' title='Edit'><i class='fa fa-pencil-square'></i></a>
+                            <a id='delete_btn' data-id='$id' data-action='delete_user' title='Delete'><i class='fa fa-trash'></i></a>";
+                            if ($suspended == 0) {
+                                echo "<a data-id='$id' id='suspend_btn' data-action='suspend_user' title='Active'><i class='fa fa-eye'></i></a>";
                             } else {
-                                echo "<a data-id='$id' id='suspend_btn' data-action='suspend_travel' title='Suspended'><i class=' fa fa-eye'></i></a>";
+                                echo "<a data-id='$id' id='suspend_btn' data-action='suspend_user' title='Suspended'><i class=' fa fa-eye-slash'></i></a>";
                             }
-                            echo "</td></tr>";
-
+                            echo "</tr>";
                             $total_record--;
                             $sr++;
                         }
-
                         ?>
+
                     </tbody>
+
                 </table>
             </div>
         </div>
     </div>
-
     <div id="deleteModal" class="modal">
         <div class="delete_modal">
             <h3 id="close_btn">X</h3>
@@ -218,6 +227,8 @@ include('header.php');
             </div>
         </div>
     </div>
+
+
     <script>
         window.addEventListener('load', () => {
             const delete_btn_group = document.querySelectorAll('#delete_btn');
@@ -288,7 +299,7 @@ include('header.php');
                     }).then((res) => {
                         delete_modal_content.innerHTML = '<h4 id="deleted_success_msg">' + res.msg + '</h4>';
                         setTimeout(() => {
-                            window.location.href = "http://localhost/travel_booking_system/travel_booking_system/html/locations.php";
+                            window.location.href = "http://localhost/travel_booking_system/travel_booking_system/html/users.php";
                         }, 3000)
                     })
                 })
@@ -303,11 +314,7 @@ include('header.php');
             });
         });
     </script>
-
 </body>
-
-</html>
-
 <?php
 include('footer.php');
 ?>

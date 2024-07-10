@@ -84,24 +84,28 @@ if ($action == 'login') {
 
     if (mysqli_num_rows($res) != 0) {
         if ($password == $user['password']) {
-            $secret_key = $config['jwt-secret'];
-            $token = JWT::encode(
-                array(
-                    'iat' => time(),
-                    'nbf' => time(),
-                    'exp' => time() + 3600,
-                    'data' => array(
-                        'userid' => $user['id'],
-                        'username' => $user['username'],
-                        'email' => $user['email'],
-                        'role' => $user['role'],
-                    )
-                ),
-                $secret_key,
-                'HS256'
-            );
-            setcookie('token', $token, time() + 3600, "/", "", true, true);
-            $response = ['login' => true, 'msg' => 'Login successfully!'];
+            if ($user['suspended'] == 1) {
+                $response = ['login' => false, 'msg' => 'This account is suspended!'];
+            } else {
+                $secret_key = $config['jwt-secret'];
+                $token = JWT::encode(
+                    array(
+                        'iat' => time(),
+                        'nbf' => time(),
+                        'exp' => time() + 3600,
+                        'data' => array(
+                            'userid' => $user['id'],
+                            'username' => $user['username'],
+                            'email' => $user['email'],
+                            'role' => $user['role'],
+                        )
+                    ),
+                    $secret_key,
+                    'HS256'
+                );
+                setcookie('token', $token, time() + 3600, "/", "", true, true);
+                $response = ['login' => true, 'msg' => 'Login successfully!'];
+            }
         } else {
             $response = ['login' => false, 'msg' => 'Please enter the correct username/password'];
         }
@@ -289,10 +293,9 @@ if ($action == 'create_booking') {
     $zipcode = $data['zip'];
     $address = $data['address'];
     $status = 1;
-    $seats = $data['seats'];
     $timecreated = time();
 
-    $query = "insert into bookings(userid,travelid,name,phone,address,city,state,zipcode,seats,status,timecreated) values('$userid','$travelid','$name','$phone','$address','$city','$state','$zipcode','$seats','$status','$timecreated')";
+    $query = "insert into bookings(userid,travelid,name,phone,address,city,zipcode,seats,status,timecreated) values('$userid','$travelid','$name','$phone','$address','$city','$state','$zipcode','$status','$timecreated')";
 
     $query_res = mysqli_query($conn, $query);
     if ($query_res) {
@@ -308,6 +311,7 @@ if ($action == 'create_order') {
     $amount = $data['amount'];
     $userid = $data['userid'];
     $travelid = $data['travelid'];
+    $seats = $data['seats'];
     $reciept_id = RECIEPT_ID;
 
     $api_key = API_KEY; // Replace with your Key ID
@@ -332,7 +336,7 @@ if ($action == 'create_order') {
     $timecreated = time();
 
     $data = ['order_id' => $order_id, 'amount' => $razorpayOrder['amount'], 'api_key' => API_KEY, 'currency' => 'INR', 'entity' => $entity, 'created_at' => $created_at];
-    $query = "insert into orders(userid,travelid,reciept,order_id,amount,currency,entity,attempts,status,created_at,timecreated) values('$userid','$travelid','$reciept_id','$order_id','$amount','$currency','$entity','$attempts','$status','$created_at','$timecreated')";
+    $query = "insert into orders(userid,travelid,reciept,order_id,amount,currency,seats,entity,attempts,status,created_at,timecreated) values('$userid','$travelid','$reciept_id','$order_id','$amount','$currency','$seats','$entity','$attempts','$status','$created_at','$timecreated')";
     $query_res = mysqli_query($conn, $query);
 
     if ($query_res) {
@@ -344,20 +348,53 @@ if ($action == 'create_order') {
     exit;
 }
 
-// array (size=12)
-// 'amount' => int 1000
-// 'amount_due' => int 1000
-// 'amount_paid' => int 0
-// 'attempts' => int 0
-// 'created_at' => int 1720184581
-// 'currency' => string 'INR' (length=3)
-// 'entity' => string 'order' (length=5)
-// 'id' => string 'order_OUxbQuq2zEpXzG' (length=20)
-// 'notes' => 
-//   object(Razorpay\Api\Order)[10]
-//     protected 'attributes' => 
-//       array (size=0)
-//         ...
-// 'offer_id' => null
-// 'receipt' => string '3456' (length=4)
-// 'status' => string 'created' (length=
+if ($action == 'delete_user') {
+    $id = $data['id'];
+    if ($id != 0 && $id != null) {
+        if (is_siteadmin() !== false) {
+            $query = "delete from user where id=$id";
+            $query_res = mysqli_query($conn, $query);
+            if ($query_res == true) {
+                $response = ['success' => true, 'msg' => 'User Deleted Successfully!'];
+            } else {
+                $response = ['success' => false, 'msg' => 'Something went wrong!'];
+            }
+        } else {
+            $response = ['success' => false, 'msg' => 'Current user do not have authorization to delete the user!'];
+        }
+    } else {
+        $response = ['success' => false, 'msg' => 'Invalid userid!'];
+    }
+    echo json_encode($response);
+    exit;
+}
+
+if ($action == 'suspend_user') {
+    $id = $data['id'];
+    if ($id != 0 && $id != null) {
+        if (is_siteadmin() !== false) {
+            $base_query = "select * from user where id='$id'";
+            $res = mysqli_query($conn, $base_query);
+            $result = mysqli_fetch_assoc($res);
+            if ($result['suspended'] == 0) {
+                $query = "update user set suspended=1 where id='$id'";
+                $msg = 'Suspended Successfully!';
+            } else {
+                $query = "update user set suspended=0 where id='$id'";
+                $msg = 'Activate Successfully!';
+            }
+            $query_res = mysqli_query($conn, $query);
+            if ($query_res == true) {
+                $response = ['success' => true, 'msg' => $msg];
+            } else {
+                $response = ['success' => false, 'msg' => 'Something went wrong!'];
+            }
+        } else {
+            $response = ['success' => false, 'msg' => 'Current user do not have authorization to suspend the user!'];
+        }
+    } else {
+        $response = ['success' => false, 'msg' => 'Invalid userid!'];
+    }
+    echo json_encode($response);
+    exit;
+}

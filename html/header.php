@@ -204,6 +204,8 @@
                                 <h2>Profile</h2>
                                 <p>Name: <?php echo $is_login->data->username ?></p>
                                 <p>Email: <?php echo $is_login->data->email ?></p>
+                                <p><a href="booking.php">Dashboard</a></p>
+
                                 <button class="logout-btn"><a href='logout.php'>Logout</a></button>
                             </div>
                         </div>
@@ -214,6 +216,7 @@
             </div>
         </div>
     </header>
+ 
 </body>
 
 </html>

@@ -85,10 +85,15 @@ function sidenavbar()
                     <i class="bi bi-house"></i><a href="locations.php" id="nav_link">Trips</a>
                     </td>
                 </tr>';
+        echo '<tr id=\'table_row_bookings\' selected="false">
+                                <td id="row_data">
+                                <i class="bi bi-house"></i><a href="users.php" id="nav_link">Users</a>
+                                </td>
+                            </tr>';
     }
     echo '<tr id=\'table_row_bookings\' selected="false">
                     <td id="row_data">
-                    <i class="bi bi-house"></i><a href="#" id="nav_link">Bookings</a>
+                    <i class="bi bi-house"></i><a href="booking.php" id="nav_link">Bookings</a>
                     </td>
                 </tr>';
     echo ' <tr id=\'table_row_payments\' selected="false">
@@ -417,3 +422,27 @@ function is_siteadmin()
         return false;
     }
 }
+
+function get_user()
+{
+    $res = is_login();
+    if ($res !== false) {
+        return $res->data;
+    } else {
+        return false;
+    }
+}
+function connect()
+{
+    $conn = mysqli_connect('localhost', 'root', '', 'travel_booking_system');
+    return $conn;
+}
+
+function get_user_by_id($id)
+{
+    $query = "select * from user where id=$id";
+    $query_res = mysqli_fetch_assoc(mysqli_query(connect(), $query));
+    return $query_res;
+}
+// get_user_by_id(94);
+// var_dump(get_user_by_id(94));

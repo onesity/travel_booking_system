@@ -386,7 +386,6 @@ if (isset($_GET['id'])) {
                 state: state.value,
                 zip: zip.value,
                 travelid: travelid.value,
-                seats: count_seat.value,
                 amount: ((price * count_seat.value) + ((price * count_seat.value) * 18) / 100)
             }
             if (Object.keys(errors).length == 0) {
@@ -404,7 +403,8 @@ if (isset($_GET['id'])) {
                             action: 'create_order',
                             amount: parseInt(((price * count_seat.value) + ((price * count_seat.value) * 18) / 100)),
                             userid: userid.value,
-                            travelid: travelid.value
+                            travelid: travelid.value,
+                            seats:count_seat.value
 
                         }
                         fetch('http://localhost/travel_booking_system/travel_booking_system/html/ajax.php', {
